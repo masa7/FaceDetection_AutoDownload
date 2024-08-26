@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "281673539231",
+    "firebase_url": "https://fir-kotlin-b327a-default-rtdb.firebaseio.com",
+    "project_id": "fir-kotlin-b327a",
+    "storage_bucket": "fir-kotlin-b327a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281673539231:android:93f6004da4224396234caa",
+        "android_client_info": {
+          "package_name": "com.example.facedetection"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyWti4-d0-BIwv5z9ed6EN68BIdA3EKWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281673539231:android:65660fd6fdc6750d234caa",
+        "android_client_info": {
+          "package_name": "com.example.firebaseapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyWti4-d0-BIwv5z9ed6EN68BIdA3EKWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

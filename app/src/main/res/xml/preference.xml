@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="@string/listCatTitle">
+        <ListPreference
+            android:defaultValue="2"
+            app:entries="@array/list_entries"
+            app:entryValues="@array/list_values"
+            app:key="listPreference"
+            app:title="@string/listPrefTitle"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/videoCatTitle">
+        <EditTextPreference
+            android:defaultValue="set your local video file"
+            app:key="videoPreference1"
+            app:title="@string/videoPrefTitle1"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            android:defaultValue="https://www.youtube.com/watch?v=8RdhjRa5HRQ"
+            app:key="videoPreference2"
+            app:title="@string/videoPrefTitle2"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/list2CatTitle">
+        <ListPreference
+            android:defaultValue="1"
+            app:entries="@array/list2_entries"
+            app:entryValues="@array/list2_values"
+            app:key="list2Preference"
+            app:title="@string/list2PrefTitle"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
