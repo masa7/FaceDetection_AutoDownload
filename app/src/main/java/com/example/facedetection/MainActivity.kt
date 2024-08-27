@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.OrientationEventListener
-import android.view.Surface
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         android.Manifest.permission.CAMERA
         ,android.Manifest.permission.READ_EXTERNAL_STORAGE
         ,android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ,android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+        //,android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
     )
 
     public class Global : Application() {
@@ -99,12 +97,6 @@ class MainActivity : AppCompatActivity() {
         settingsPage()
         repeatVideoFile()
     }
-    /*
-    private fun allPermissionGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-     */
 
     private fun allPermissionGranted(): Boolean{
         if(Build.VERSION.SDK_INT >= 30){
@@ -131,37 +123,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun askCameraPermission() {
-        if (arrayOf(android.Manifest.permission.CAMERA).all {
-                ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-            }) {
-            screenSetting()
-            detectAndPlayStart()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), 0)
-        }
-    }
-
-    // permission for CAMERA only
-    /*
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 0 && ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            screenSetting()
-            detectAndPlayStart()
-        } else {
-            Toast.makeText(this, "Camera Permission Denied!", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-     */
-
-    // permission for CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
-
+    // permission for array of required functions (CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE etc)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -182,7 +144,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun buttonClick() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val cameraSide = sharedPref?.getString("list2Preference", "1")
 
         binding.apply {
             buttonStopCamera.setOnClickListener {
@@ -195,16 +156,6 @@ class MainActivity : AppCompatActivity() {
                 screenSetting()
                 detectAndPlayStart()
             }
-            /*
-            buttonTurnCamera.setOnClickListener {
-                when (cameraSide) {
-                    "1" -> bg_cameraManager.changeCamera()
-                    "2" -> bg_cameraManager.changeCamera()
-                    "3" -> bg_cameraManager.changeCamera()
-                    "4" -> cameraManager.changeCamera()
-                }
-            }
-            */
         }
     }
 

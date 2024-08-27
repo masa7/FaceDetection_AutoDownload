@@ -13,7 +13,6 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.example.facedetection.graphic.GraphicOverlay
-import com.example.facedetection.utils.CameraUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -50,15 +49,6 @@ class CameraManager(
             preview = Preview.Builder().build()
             imageAnalysis.setAnalyzer(cameraExecutor, CameraAnalyzer(graphicOverlay, cameraSide))
 
-            /*
-            imageAnalysis = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also {
-                    it.setAnalyzer(cameraExecutor, CameraAnalyzer(graphicOverlay, cameraSide))
-                }
-            */
-
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(cameraOption)
                 .build()
@@ -77,7 +67,7 @@ class CameraManager(
                 in 225..314 -> rotation = Surface.ROTATION_90
                 else -> rotation = Surface.ROTATION_0
             }
-            imageAnalysis?.targetRotation = rotation
+            imageAnalysis.targetRotation = rotation
         }
     }
 
@@ -97,24 +87,6 @@ class CameraManager(
         } catch (e:Exception) {
             Log.e(TAG, "setCameraConfig: $e")
         }
-    }
-
-    fun changeCamera() {
-        var cameraSide: String
-
-        cameraProvider.unbindAll()
-        cameraOption = if (cameraOption == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT
-        else CameraSelector.LENS_FACING_BACK
-
-        CameraUtils.toggleSelector()
-
-        if(cameraOption == CameraSelector.LENS_FACING_BACK){
-            cameraSide = "1"
-        }else{
-            cameraSide = "2"
-        }
-
-        cameraStart(cameraSide)
     }
 
     fun cameraStop() {

@@ -10,7 +10,6 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.example.facedetection.utils.CameraUtils
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -43,15 +42,6 @@ class bgCameraManager(
             cameraProvider = cameraProcessProvider.get()
             imageAnalysis.setAnalyzer(cameraExecutor, bgCameraAnalyzer())
 
-            /*
-            imageAnalysis = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also {
-                    it.setAnalyzer(cameraExecutor, bgCameraAnalyzer())
-                }
-            */
-
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(bgCameraOption)
                 .build()
@@ -70,7 +60,7 @@ class bgCameraManager(
                 in 225..314 -> rotation = Surface.ROTATION_90
                 else -> rotation = Surface.ROTATION_0
             }
-            imageAnalysis?.targetRotation = rotation
+            imageAnalysis.targetRotation = rotation
         }
     }
 
@@ -90,34 +80,8 @@ class bgCameraManager(
         }
     }
 
-    fun changeCamera() {
-        var cameraSide: String
-
-        cameraProvider.unbindAll()
-        bgCameraOption = if (bgCameraOption == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT
-        else CameraSelector.LENS_FACING_BACK
-        CameraUtils.toggleSelector()
-        if(bgCameraOption == CameraSelector.LENS_FACING_BACK){
-            cameraSide = "1"
-        }else{
-            cameraSide = "2"
-        }
-        cameraStart(cameraSide)
-    }
-
     fun cameraStop() {
         cameraProvider.unbindAll()
         bgOrientationEventListener.disable()
-    }
-
-    fun setCameraSide(cameraSide: String){
-        cameraProvider.unbindAll()
-        if(cameraSide == "1"){
-            bgCameraOption = CameraSelector.LENS_FACING_BACK
-        }else{
-            bgCameraOption = CameraSelector.LENS_FACING_FRONT
-        }
-        //CameraUtils.setSelector(cameraSide)
-        cameraStart(cameraSide)
     }
 }

@@ -1,19 +1,14 @@
 package com.example.facedetection.utils
 
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.RectF
 import androidx.camera.core.CameraSelector
-//import androidx.compose.ui.focus.DefaultFocusProperties.left
-//import androidx.compose.ui.focus.DefaultFocusProperties.right
 import com.example.facedetection.graphic.GraphicOverlay
+import kotlin.math.abs
 import kotlin.math.ceil
 
 object CameraUtils {
 
-    private var mScale: Float? = null
-    private var mOffsetX: Float? = null
-    private var mOffsetY: Float? = null
     private var cameraSelector: Int = CameraSelector.LENS_FACING_FRONT
 
     fun calculateRect(
@@ -25,106 +20,113 @@ object CameraUtils {
         rotationDegree: Int
     ) : RectF {
 
-        // for land scape
-        fun isLandScapeMode(): Boolean {
-            //return overlay.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-            return when (rotationDegree) {
-                0 -> true       //   0 rotation: landscape
-                180 -> true     // 180 rotation: inverse landscape
-                270 -> false    // 270 rotation: inverse portrait
-                else -> false   //  90 rotation: portrait
-            }
+        val centerX = getOverlayX(width, height, overlay.width.toFloat(), overlay.height.toFloat(),(boundingBoxT.right.toFloat() + boundingBoxT.left.toFloat())/2, (boundingBoxT.top.toFloat() + boundingBoxT.bottom.toFloat())/2, rotationDegree, cameraSide)
+        val centerY = getOverlayY(width, height, overlay.width.toFloat(), overlay.height.toFloat(),(boundingBoxT.right.toFloat() + boundingBoxT.left.toFloat())/2, (boundingBoxT.top.toFloat() + boundingBoxT.bottom.toFloat())/2, rotationDegree, cameraSide)
+        val scaleXY = getScale(width, height, overlay.width.toFloat(), overlay.height.toFloat())
+        val sideLen = getSideLength(boundingBoxT, scaleXY)
+
+        val leftX = centerX - sideLen
+        val rightX = centerX + sideLen
+        val topY = centerY - sideLen
+        val bottomY = centerY + sideLen
+
+        val mappedBox = RectF().apply {
+            left = leftX
+            right = rightX
+            top = topY
+            bottom = bottomY
         }
 
-        fun whenLandScapeModeWidth(): Float {
-            return when (isLandScapeMode()) {
-                true -> width
-                false -> height
-            }
-        }
-
-        fun whenLandScapeModeHeight(): Float {
-            return when (isLandScapeMode()) {
-                true -> height
-                false -> width
-            }
-        }
-
-        val scaleX = overlay.width.toFloat() / whenLandScapeModeWidth()
-        val scaleY = overlay.height.toFloat() / whenLandScapeModeHeight()
-        //val scale = scaleX.coerceAtLeast(scaleY)
-
-        val scale: Float
-        when (rotationDegree) {
-            0 -> scale = scaleY.coerceAtLeast(scaleX)      //   0 rotation: landscape
-            180 -> scale = scaleY.coerceAtLeast(scaleX)    // 180 rotation: inverse landscape
-            270 -> scale = scaleX.coerceAtLeast(scaleY)    // 270 rotation: inverse portrait
-            else -> scale = scaleX.coerceAtLeast(scaleY)   //  90 rotation: portrait
-        }
-        this.mScale = scale
-
-        // Calculate offset (we need to center the overlay on the target)
-        val offsetX = (overlay.width.toFloat() - ceil(whenLandScapeModeWidth() * scale)) / 2.0f
-        val offsetY = (overlay.height.toFloat() - ceil(whenLandScapeModeHeight() * scale)) / 2.0f
-
-        this.mOffsetX = offsetX
-        this.mOffsetY = offsetY
-        /*
-        val mappedBox = RectF().apply { // back camera
-            left = boundingBoxT.right * scale + offsetX
-            right = boundingBoxT.left * scale + offsetX
-            top = boundingBoxT.top * scale + offsetY
-            bottom = boundingBoxT.bottom * scale + offsetY
-        }
-        */
-        val centerX = overlay.width.toFloat()/2
-        val centerY = overlay.height.toFloat()/2
-        val leftX = boundingBoxT.right * scale + offsetX - centerX
-        val rightX = boundingBoxT.left * scale + offsetX - centerX
-        val topY = boundingBoxT.top * scale + offsetY - centerY
-        val bottomY = boundingBoxT.bottom * scale + offsetY - centerY
-
-        val mappedBox = RectF().apply { // back camera
-            when (rotationDegree) {
-                0 -> {
-                    left = centerX - topY
-                    right = centerX - bottomY
-                    top = centerY + rightX
-                    bottom = centerY + leftX
-                }
-
-                180 -> {
-                    left = centerX + topY
-                    right = centerX + bottomY
-                    top = centerY - rightX
-                    bottom = centerY - leftX
-                }
-
-                270 -> {
-                    left = centerX - leftX
-                    right = centerX - rightX
-                    top = centerY - bottomY
-                    bottom = centerY - topY
-                }
-
-                else -> { // rotation = 90
-                    left = centerX + leftX
-                    right = centerX + rightX
-                    top = centerY + bottomY
-                    bottom = centerY + topY
-                }
-            }
-        }
-
-        if(cameraSide=="2"){ // front camera
-            val centerX = overlay.width.toFloat()/2
-            mappedBox.apply {
-                left = centerX + (centerX - left)
-                right = centerX - (right - centerX)
-            }
-        }
+        //logCheck("screenInfo.txt", width.toFloat(), height.toFloat(), overlay.width.toFloat(), overlay.height.toFloat(), boundingBoxT, cameraSide, rotationDegree)
 
         return mappedBox
+    }
+
+    fun getScale(imageW:Float, imageH:Float, overlayW:Float, overlayH:Float):Float{
+        //val listScale = listOf(overlayW / imageW, overlayW / imageH, overlayH / imageW, overlayH / imageH)
+        //return listScale.min()
+
+        return (overlayW / imageW + overlayW / imageH + overlayH / imageW + overlayH / imageH) / 4
+    }
+
+    fun getSideLength(box: Rect, scale: Float): Float{
+        return (abs(box.right - box.left) + abs(box.bottom - box.top)) * scale / 4
+    }
+
+    fun getOverlayX(imageW:Float, imageH:Float, overlayW: Float, overlayH:Float, imageX:Float, imageY:Float, rotationDegree:Int, cameraSide:String):Float {
+        val ratioX = imageX /  getMaxX(imageW, imageH, rotationDegree)
+        val ratioY = imageY /  getMaxY(imageW, imageH, rotationDegree)
+
+        var x = when(rotationDegree){
+            0 -> ceil((1 - ratioY) * overlayW)
+            180 -> ceil(ratioY * overlayW)
+            270 -> ceil((1 - ratioX) * overlayW)
+            else -> ceil(ratioX * overlayW)
+        }
+
+        val x2 = when(rotationDegree){
+            0 -> ceil((1 - ratioY) * overlayW)
+            180 -> ceil((ratioY) * overlayW)
+            270 -> ceil((1 - ratioX) * overlayW)
+            else -> ceil(ratioX * overlayW)
+        }
+
+        if(cameraSide == "2") {x = x2}
+
+        return x
+    }
+
+    fun getOverlayY(imageW:Float, imageH:Float, overlayW: Float, overlayH:Float, imageX:Float, imageY:Float, rotationDegree:Int, cameraSide: String):Float {
+        val ratioX = imageX /  getMaxX(imageW, imageH, rotationDegree)
+        val ratioY = imageY /  getMaxY(imageW, imageH, rotationDegree)
+
+        var y = when(rotationDegree){
+            0 -> ceil(ratioX * overlayH)
+            180 -> ceil((1 - ratioX) * overlayH)
+            270 -> ceil((1 - ratioY) * overlayH)
+            else -> ceil(ratioY * overlayH)
+        }
+
+        val y2 = when(rotationDegree){
+            0 -> ceil((1 - ratioX) * overlayH)
+            180 -> ceil((ratioX) * overlayH)
+            270 -> ceil((ratioY) * overlayH)
+            else -> ceil((1 - ratioY) * overlayH)
+        }
+
+        if(cameraSide == "2") {y = y2}
+
+        return y
+    }
+
+    fun getMaxX(imageW:Float, imageH: Float, rotationDegree:Int):Float {
+        return when(rotationDegree){
+            0 -> imageW
+            180 -> imageW
+            270 -> imageH
+            else -> imageH
+        }
+    }
+
+    fun getMaxY(imageW:Float, imageH: Float, rotationDegree:Int):Float {
+        return when(rotationDegree){
+            0 -> imageH
+            180 -> imageH
+            270 -> imageW
+            else -> imageW
+        }
+    }
+
+    fun logCheck(fn:String, w: Float, h: Float, overlayW: Float, overlayH: Float, box: Rect, cameraSide: String, rotationDegree: Int){
+        val file = FileUtils(fn)
+
+        file.saveFile(cameraSide)
+        file.saveFile(", " + rotationDegree.toString())
+        file.saveFile(", " + w.toString() + ", " + h.toString())
+        file.saveFile(", " + overlayW.toString() + ", " + overlayH.toString())
+        file.saveFile(", " + box.left.toString() + ", " + box.right.toString())
+        file.saveFile(", " + box.top.toString() + ", " + box.bottom.toString())
+        file.saveFile("\n")
     }
 
     fun toggleSelector() {
