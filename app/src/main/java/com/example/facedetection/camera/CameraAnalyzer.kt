@@ -3,6 +3,8 @@ package com.example.facedetection.camera
 import android.graphics.Rect
 import java.time.LocalDateTime
 import android.util.Log
+import com.example.facedetection.MainActivity.Global.Companion.dateStr
+import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
@@ -31,8 +33,8 @@ class CameraAnalyzer(
     init {
         cameraSide = initialCameraSide
 
-        val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        file = FileUtils("Log_${dateStr}.txt")
+        //val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        file = FileUtils("Log_${dateStr}.txt", storageType)
         intervalSec = 1
         prevSec = 0
         fsFlag = false
@@ -83,12 +85,12 @@ class CameraAnalyzer(
 
                     if (id in idList) {
                         // save data into file
-                        file.saveFile(dateAndTime)
-                        file.saveFile(", ")
-                        file.saveFile(id.toString())
-                        file.saveFile(", ")
-                        file.saveFile(rotationDegree.toString())
-                        file.saveFile("\n")
+                        file.save(dateAndTime)
+                        file.save(", ")
+                        file.save(id.toString())
+                        file.save(", ")
+                        file.save(rotationDegree.toString())
+                        file.save("\n")
 
                         // export data to firestore
 //                        if(fsFlag){

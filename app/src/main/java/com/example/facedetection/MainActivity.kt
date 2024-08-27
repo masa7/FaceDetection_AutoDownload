@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
@@ -22,7 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
+import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
+import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
@@ -39,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bg_cameraManager: bgCameraManager
     private lateinit var videoView: VideoView
     private lateinit var webView: WebView
-    private var videoId = R.raw.sample0001
     private var file: FileUtils
     private val REQUIRED_PERMISSIONS_29 = arrayOf(
         android.Manifest.permission.CAMERA
@@ -56,17 +56,19 @@ class MainActivity : AppCompatActivity() {
     public class Global : Application() {
         companion object {
             @JvmField
-            var emarthUrl: String = "https://www.soumu.go.jp/main_content/000487279.mp4"
+            var emarthUrl: String = "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_10mb.mp4"
             // set EMarth download URL to above currentUrl global variable
             // sample video https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_10mb.mp4
             // sampel video2 https://www.soumu.go.jp/main_content/000487279.mp4
+
+            // 1: Internal Storage, 2: External Storage(Download folder)
+            val storageType: String = "1"
+            val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         }
     }
 
-
     init {
-        val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        file = FileUtils("Log_${dateStr}.txt")
+        file = FileUtils("Log_${dateStr}.txt", storageType)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,8 +145,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buttonClick() {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-
         binding.apply {
             buttonStopCamera.setOnClickListener {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -163,13 +163,6 @@ class MainActivity : AppCompatActivity() {
         videoView.setOnPreparedListener({
             it.isLooping = true
         })
-        /*
-        videoView.setOnCompletionListener {
-            videoView.setVideoPath("android.resource://" + packageName + "/" + videoId)
-            videoView.seekTo(0)
-            videoView.start()
-        }
-        */
     }
 
     private fun settingsPage() {
@@ -228,7 +221,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getDetectionFile() {
-        binding.counterText.text = file.readFile()
+        binding.counterText.text = file.read()
     }
 
     private fun detectAndPlayStart() {
@@ -238,12 +231,10 @@ class MainActivity : AppCompatActivity() {
         val dateAndTime =
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
 
-        file.saveFile(dateAndTime)
-        file.saveFile(", mode=")
-        file.saveFile(execMode + cameraSide)
-        file.saveFile("\n")
-
-        //file.savePublicFiles(execMode + cameraSide)
+        file.save(dateAndTime)
+        file.save(", mode=")
+        file.save(execMode + cameraSide)
+        file.save("\n")
 
         when (execMode) {
             "1" -> { // video play: local file

@@ -20,7 +20,7 @@ class DownloadUtils(linkName: String)  {
         // for data download
         dlContext = SingletonContext.applicationContext()
         dlLink = linkName
-        file = FileUtils("downloadTest.txt")
+        file = FileUtils("downloadTest.txt", "2")
     }
 
     fun download(): String {

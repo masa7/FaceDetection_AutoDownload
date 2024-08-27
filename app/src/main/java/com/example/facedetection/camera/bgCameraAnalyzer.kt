@@ -1,6 +1,8 @@
 package com.example.facedetection.camera
 
 import android.util.Log
+import com.example.facedetection.MainActivity.Global.Companion.dateStr
+import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
@@ -21,8 +23,8 @@ class bgCameraAnalyzer() : bgBaseCameraAnalyzer<List<Face>>() {
     private var idList: MutableList<Int?> = mutableListOf()
 
     init {
-        val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        file = FileUtils("Log_${dateStr}.txt")
+        //val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        file = FileUtils("Log_${dateStr}.txt", storageType)
         intervalSec = 1
         prevSec = 0
     }
@@ -62,12 +64,12 @@ class bgCameraAnalyzer() : bgBaseCameraAnalyzer<List<Face>>() {
 
                     if (id in idList) {
                         // save data into file
-                        file.saveFile(dateAndTime)
-                        file.saveFile(", ")
-                        file.saveFile(id.toString())
-                        file.saveFile(", ")
-                        file.saveFile(rotationDegree.toString())
-                        file.saveFile("\n")
+                        file.save(dateAndTime)
+                        file.save(", ")
+                        file.save(id.toString())
+                        file.save(", ")
+                        file.save(rotationDegree.toString())
+                        file.save("\n")
                     } else {
                         idList.add(id)
                     }
