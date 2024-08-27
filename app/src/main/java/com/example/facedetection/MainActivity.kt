@@ -160,11 +160,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun repeatVideoFile() {
+        videoView.setOnPreparedListener({
+            it.isLooping = true
+        })
+        /*
         videoView.setOnCompletionListener {
             videoView.setVideoPath("android.resource://" + packageName + "/" + videoId)
             videoView.seekTo(0)
             videoView.start()
         }
+        */
     }
 
     private fun settingsPage() {
