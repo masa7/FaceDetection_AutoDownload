@@ -12,6 +12,7 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.Toast
 import android.widget.VideoView
@@ -205,6 +206,7 @@ class MainActivity : AppCompatActivity() {
             "2" -> { // video play: YouTube
                 //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 webView.isVisible = true
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             }
 
             "3" -> { // background log file check
@@ -367,18 +369,25 @@ class MainActivity : AppCompatActivity() {
             Log.i("TAGY", "${videoURL}")
         }
 
+        /* to enable YouTube functions
         webView.apply {
             settings.javaScriptEnabled = true
             webChromeClient = WebChromeClient()
             settings.cacheMode = WebSettings.LOAD_NO_CACHE
             settings.loadsImagesAutomatically = true
-            settings.javaScriptEnabled = true
             settings.allowFileAccess = true
             settings.javaScriptCanOpenWindowsAutomatically = true
             settings.mediaPlaybackRequiresUserGesture = false
             settings.domStorageEnabled = true
         }.loadData(videoURL,"text/html","utf-8")
-        webView.settings.javaScriptEnabled=true
+        */
+
+        webView.apply {
+            settings.javaScriptEnabled = true
+            webViewClient = WebViewClient()
+            settings.cacheMode = WebSettings.LOAD_NO_CACHE
+        }
+
         webView.loadUrl(videoURL)
         webView.onResume()
     }

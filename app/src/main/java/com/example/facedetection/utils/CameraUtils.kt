@@ -3,7 +3,6 @@ package com.example.facedetection.utils
 import android.graphics.Rect
 import android.graphics.RectF
 import androidx.camera.core.CameraSelector
-import com.example.facedetection.MainActivity
 import com.example.facedetection.graphic.GraphicOverlay
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -118,7 +117,7 @@ object CameraUtils {
     }
 
     fun screenCheck(fn:String, w: Float, h: Float, overlayW: Float, overlayH: Float, box: Rect, cameraSide: String, rotationDegree: Int){
-        val file = FileUtils(fn, MainActivity.Global.storageType)
+        val file = FileUtils(fn, "2")
 
         file.save(cameraSide)
         file.save(", " + rotationDegree.toString())
