@@ -4,10 +4,13 @@ import android.app.Application
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.os.Handler
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Looper
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -17,6 +20,7 @@ import android.widget.Button
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -53,6 +57,14 @@ class MainActivity : AppCompatActivity() {
         ,android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         //,android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
     )
+
+    val handler = Handler(Looper.getMainLooper())
+    val timer = object: Runnable{
+        override fun run(){
+            binding.buttonControl.isVisible = false
+            handler.postDelayed(this,5000)
+        }
+    }
 
     public class Global : Application() {
         companion object {
@@ -99,6 +111,11 @@ class MainActivity : AppCompatActivity() {
         buttonClick()
         settingsPage()
         repeatVideoFile()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        binding.buttonControl.isVisible = true
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun allPermissionGranted(): Boolean{
@@ -200,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                 videoView.isVisible = true
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
                 binding.rotatebtn.isVisible = false
-                binding.downloadbtn.isVisible = true
+                binding.downloadbtn.isVisible = false
             }
 
             "2" -> { // video play: YouTube
@@ -232,6 +249,7 @@ class MainActivity : AppCompatActivity() {
         val cameraSide = sharedPref?.getString("list2Preference", "1") ?: "1"
         val dateAndTime =
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+        handler.post(timer)
 
         file.save(dateAndTime)
         file.save(", mode=")
@@ -269,6 +287,7 @@ class MainActivity : AppCompatActivity() {
         val execMode = sharedPref?.getString("listPreference", "2")
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        handler.removeCallbacks(timer)
 
         when (execMode) {
             "1" -> { // video play: local file
@@ -338,22 +357,23 @@ class MainActivity : AppCompatActivity() {
 
         val hidebtn = findViewById<Button>(R.id.downloadbtn)
         hidebtn.isVisible = false
-
     }
 
     private fun stopVideoFile() {
 
         // video download upon stop action
+        /*
         val downloadButton = findViewById<Button>(R.id.downloadbtn)
         val downloader = AndroidDownloader(this)
         downloadButton.setOnClickListener {
             downloader.downloadFile(emarthUrl)
             Toast.makeText(this, "Download Started", Toast.LENGTH_LONG).show()
         }
+        */
 
         if (videoView.isPlaying) {
             videoView.pause()
-            downloadButton.visibility = View.VISIBLE
+            //downloadButton.visibility = View.VISIBLE
         }
     }
 

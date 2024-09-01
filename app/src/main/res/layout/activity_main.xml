@@ -61,40 +61,41 @@
         android:layout_height="match_parent"/>
 
     <FrameLayout
+        android:id="@+id/buttonControl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonStopCamera"
+            style="?attr/floatingActionButtonSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="20dp"
-            android:src="@drawable/icon_stop"
-            style="?attr/floatingActionButtonSmallStyle"
-            android:contentDescription="@string/stop_camera" />
+            android:contentDescription="@string/stop_camera"
+            android:src="@drawable/icon_stop" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonChangePage"
             style="?attr/floatingActionButtonSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|bottom"
+            android:layout_gravity="start|bottom"
             android:layout_margin="20dp"
             android:contentDescription="@string/page2"
             android:src="?attr/actionModeCopyDrawable" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/buttonStartCamera"
+            style="?attr/floatingActionButtonSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="20dp"
+            android:contentDescription="@string/start_camera"
             android:src="@drawable/icon_start"
-            android:visibility="invisible"
-            style="?attr/floatingActionButtonSmallStyle"
-            android:contentDescription="@string/start_camera" />
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/downloadbtn"

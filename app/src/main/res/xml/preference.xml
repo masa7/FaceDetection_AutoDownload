@@ -14,6 +14,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/videoCatTitle">
+        <Preference
+            android:defaultValue="未実行"
+            app:key="dlPreference"
+            app:title="@string/dlPrefTitle" />
         <EditTextPreference
             android:defaultValue="set your local video file"
             app:key="videoPreference1"
