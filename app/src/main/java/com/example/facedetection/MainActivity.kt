@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     val timer = object: Runnable{
         override fun run(){
             binding.buttonControl.isVisible = false
-            handler.postDelayed(this,5000)
+            handler.postDelayed(this,7000)
         }
     }
 
