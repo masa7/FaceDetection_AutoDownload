@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EMarth</string>
+    <string name="app_name"><font size="15">EM APPLIED RESEARCH &amp; TECHNOLOGY HUB</font></string>
     <string name="turn_camera">Turn Camera</string>
     <string name="stop_camera">Stop Camera</string>
     <string name="start_camera">Start Camera</string>
@@ -19,6 +19,9 @@
     <string name="listPrefTitle">実行モード</string>
     <string name="list2CatTitle">カメラ</string>
     <string name="list2PrefTitle">カメラ選択</string>
+    <string name="logPrefTitle">ログ管理</string>
+    <string name="uploadPrefTitle">ログ・DBアップロード</string>
+    <string name="locationPrefTitle">ログ用・現在地</string>
 
     <string-array name="list_entries">
         <item>動画再生（ファイル）</item>

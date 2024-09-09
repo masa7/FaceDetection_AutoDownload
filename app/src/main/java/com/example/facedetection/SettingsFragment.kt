@@ -1,6 +1,7 @@
 package com.example.facedetection
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
@@ -50,6 +51,21 @@ class SettingsFragment: PreferenceFragmentCompat(){
             this.findPreference<Preference>("dlPreference")?.summary = dlAsof
 
             true
+        }
+
+
+        this.findPreference<Preference>("ulPreference")?.setOnPreferenceClickListener {
+            val intent = Intent(context, UploadActivity::class.java)
+            activity?.startActivity(intent)
+            true
+
+        }
+
+        this.findPreference<Preference>("currentLocation")?.setOnPreferenceClickListener {
+            val intent = Intent(context, GetLocation::class.java)
+            activity?.startActivity(intent)
+            true
+
         }
     }
 }

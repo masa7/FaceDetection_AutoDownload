@@ -11,8 +11,6 @@ import android.os.Environment
 import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
-import android.view.View
-import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -20,7 +18,6 @@ import android.widget.Button
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -46,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var videoView: VideoView
     private lateinit var webView: WebView
     private var file: FileUtils
+
+
     private val REQUIRED_PERMISSIONS_29 = arrayOf(
         android.Manifest.permission.CAMERA
         ,android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -69,13 +68,11 @@ class MainActivity : AppCompatActivity() {
     public class Global : Application() {
         companion object {
             @JvmField
-            var emarthUrl: String = "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_10mb.mp4"
+            var emarthUrl: String = "https://www.pexels.com/download/video/5692315-hd_1920_1080_30fps.mp4"
             // set EMarth download URL to above currentUrl global variable
-            // sample video https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_10mb.mp4
-            // sampel video2 https://www.soumu.go.jp/main_content/000487279.mp4
 
             // 1: Internal Storage, 2: External Storage(Download folder)
-            val storageType: String = "1"
+            val storageType: String = "2"
             val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         }
     }
@@ -108,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
         //askCameraPermission()
         askAllPermission()
+
         buttonClick()
         settingsPage()
         repeatVideoFile()
@@ -135,10 +133,21 @@ class MainActivity : AppCompatActivity() {
             screenSetting()
             detectAndPlayStart()
         } else {
-            if(Build.VERSION.SDK_INT >= 30) {
-                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_30, 0)
-            }else{
-                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_29, 0)
+            if(Build.VERSION.SDK_INT >= 33) {
+                if (arrayOf(android.Manifest.permission.CAMERA).all {
+                        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+                    }) {
+                    screenSetting()
+                    detectAndPlayStart()
+                } else {
+                    ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), 0)
+                }
+            }else {
+                if(Build.VERSION.SDK_INT >= 30) {
+                    ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_30, 0)
+                }else{
+                    ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_29, 0)
+                }
             }
         }
     }

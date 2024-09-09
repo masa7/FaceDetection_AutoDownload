@@ -41,4 +41,16 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:title="@string/logPrefTitle">
+        <Preference
+            android:defaultValue="未実行"
+            app:key="ulPreference"
+            app:title="@string/uploadPrefTitle" />
+        <Preference
+            android:defaultValue="未実行"
+            app:key="currentLocation"
+            app:title="@string/locationPrefTitle" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

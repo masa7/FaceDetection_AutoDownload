@@ -1,8 +1,20 @@
+
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <!-- style name="Base.Theme.FaceDetection" parent="Theme.Material3.DayNight.NoActionBar" -->
+    <!--style name="Base.Theme.FaceDetection" parent="Theme.Material3.DayNight.NoActionBar" -->
     <style name="Base.Theme.FaceDetection" parent="Theme.Material3.DayNight">
-    <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.FaceDetection" parent="@style/Theme.AppCompat.Light">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 </resources>
