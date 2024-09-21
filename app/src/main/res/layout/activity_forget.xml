@@ -26,16 +26,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-<!--            <TextView-->
-<!--                android:id="@+id/ResetText"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Reset Password"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="36sp"-->
-<!--                android:textStyle="bold" />-->
-
             <EditText
                 android:id="@+id/editTextReset"
                 android:layout_width="match_parent"
@@ -44,7 +34,7 @@
                 android:background="@drawable/custom_edittext"
                 android:drawableStart="@drawable/icon_email"
                 android:drawablePadding="8dp"
-                android:hint="@string/Enteremailaddress"
+                android:hint="@string/Enter_email_address"
                 android:inputType="textEmailAddress"
                 android:padding="8dp"
                 android:textColor="@color/black"
@@ -56,7 +46,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/purple"
-                android:text="@string/RESETMYPASSWORD"
+                android:text="@string/RESET_MY_PASSWORD"
                 android:textSize="16sp"
                 app:cornerRadius="20dp" />
         </LinearLayout>

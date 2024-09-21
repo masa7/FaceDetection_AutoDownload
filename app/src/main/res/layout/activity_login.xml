@@ -30,7 +30,7 @@
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/loginpage"
+                android:text="@string/login_page"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="25sp"
@@ -45,7 +45,7 @@
                 android:background="@drawable/custom_edittext"
                 android:drawableStart="@drawable/icon_email"
                 android:drawablePadding="8dp"
-                android:hint="@string/Enteremail"
+                android:hint="@string/Enter_email"
                 android:padding="8dp"
                 android:textColor="@color/black"
                 android:importantForAutofill="no"/>
@@ -80,7 +80,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/purple"
-                android:text="@string/SIGNUP"
+                android:text="@string/SIGN_UP"
                 android:textSize="16sp"
                 app:cornerRadius="20dp" />
 
@@ -97,7 +97,7 @@
                 android:layout_marginTop="30dp"
                 android:background="@null"
                 android:backgroundTint="@color/white"
-                android:text="@string/passwordreset"
+                android:text="@string/password_reset"
                 android:textColor="#373535"
                 android:textSize="14sp"
                 app:cornerRadius="20dp" />

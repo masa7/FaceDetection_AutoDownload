@@ -26,16 +26,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-<!--            <TextView-->
-<!--                android:id="@+id/loginText"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="SIGN UP"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="36sp"-->
-<!--                android:textStyle="bold" />-->
-
             <EditText
                 android:id="@+id/editTextEmailSignup"
                 android:inputType="textEmailAddress"
@@ -45,7 +35,7 @@
                 android:background="@drawable/custom_edittext"
                 android:drawableStart="@drawable/icon_email"
                 android:drawablePadding="8dp"
-                android:hint="@string/Enteremail"
+                android:hint="@string/Enter_email"
                 android:padding="8dp"
                 android:textColor="@color/black"
                 android:importantForAutofill="no"/>
@@ -72,7 +62,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/purple"
-                android:text="@string/SIGNUP"
+                android:text="@string/SIGN_UP"
                 android:textSize="16sp"
                 app:cornerRadius="20dp" />
 
