@@ -14,6 +14,7 @@ import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.utils.SingletonContext
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
+import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -67,5 +68,14 @@ class SettingsFragment: PreferenceFragmentCompat(){
             true
 
         }
+
+        this.findPreference<Preference>("logout")?.setOnPreferenceClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            activity?.startActivity(intent)
+            true
+        }
+
     }
 }

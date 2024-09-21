@@ -53,6 +53,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation(libs.play.services.vision.common)
+    implementation(libs.firebase.auth)
     //implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
     //implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)

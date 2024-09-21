@@ -9,7 +9,7 @@
     android:background="@drawable/login_bg"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".LoginPage">
+    tools:context=".ForgetActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -27,48 +27,36 @@
             android:padding="24dp">
 
             <TextView
-                android:id="@+id/loginText"
+                android:id="@+id/ResetText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="Reset Password"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="40dp"
-                android:background="@drawable/custom_edittext"
-                android:drawableLeft="@drawable/icon_user"
-                android:drawablePadding="8dp"
-                android:hint="Username"
-                android:padding="8dp"
-                android:textColor="@color/black" />
-
-            <EditText
-                android:id="@+id/password"
+                android:id="@+id/editTextReset"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/custom_edittext"
-                android:drawableLeft="@drawable/icon_lock"
+                android:drawableLeft="@drawable/icon_email"
                 android:drawablePadding="8dp"
-                android:hint="Password"
-                android:inputType="textPassword"
+                android:hint="Enter email address"
+                android:inputType="textEmailAddress"
                 android:padding="8dp"
                 android:textColor="@color/black" />
 
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/buttonReset"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/purple"
-                android:text="Login"
-                android:textSize="18sp"
+                android:text="RESET MY PASSWORD"
+                android:textSize="16sp"
                 app:cornerRadius="20dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

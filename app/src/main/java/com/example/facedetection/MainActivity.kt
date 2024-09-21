@@ -9,7 +9,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
+import android.os.PersistableBundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -30,6 +33,7 @@ import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
 import com.example.facedetection.utils.FileUtils
+import com.google.firebase.auth.FirebaseAuth
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -46,29 +50,30 @@ class MainActivity : AppCompatActivity() {
 
 
     private val REQUIRED_PERMISSIONS_29 = arrayOf(
-        android.Manifest.permission.CAMERA
-        ,android.Manifest.permission.READ_EXTERNAL_STORAGE
-        ,android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
     private val REQUIRED_PERMISSIONS_30 = arrayOf(
-        android.Manifest.permission.CAMERA
-        ,android.Manifest.permission.READ_EXTERNAL_STORAGE
-        ,android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         //,android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
     )
 
     val handler = Handler(Looper.getMainLooper())
-    val timer = object: Runnable{
-        override fun run(){
+    val timer = object : Runnable {
+        override fun run() {
             binding.buttonControl.isVisible = false
-            handler.postDelayed(this,7000)
+            handler.postDelayed(this, 7000)
         }
     }
 
     public class Global : Application() {
         companion object {
             @JvmField
-            var emarthUrl: String = "https://www.pexels.com/download/video/5692315-hd_1920_1080_30fps.mp4"
+            var emarthUrl: String =
+                "https://www.pexels.com/download/video/5692315-hd_1920_1080_30fps.mp4"
             // set EMarth download URL to above currentUrl global variable
 
             // 1: Internal Storage, 2: External Storage(Download folder)
@@ -116,12 +121,12 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun allPermissionGranted(): Boolean{
-        if(Build.VERSION.SDK_INT >= 30){
+    private fun allPermissionGranted(): Boolean {
+        if (Build.VERSION.SDK_INT >= 30) {
             return REQUIRED_PERMISSIONS_30.all {
                 ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
             }
-        }else{
+        } else {
             return REQUIRED_PERMISSIONS_29.all {
                 ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
             }
@@ -133,19 +138,26 @@ class MainActivity : AppCompatActivity() {
             screenSetting()
             detectAndPlayStart()
         } else {
-            if(Build.VERSION.SDK_INT >= 33) {
+            if (Build.VERSION.SDK_INT >= 33) {
                 if (arrayOf(android.Manifest.permission.CAMERA).all {
-                        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+                        ContextCompat.checkSelfPermission(
+                            this,
+                            it
+                        ) == PackageManager.PERMISSION_GRANTED
                     }) {
                     screenSetting()
                     detectAndPlayStart()
                 } else {
-                    ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), 0)
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(android.Manifest.permission.CAMERA),
+                        0
+                    )
                 }
-            }else {
-                if(Build.VERSION.SDK_INT >= 30) {
+            } else {
+                if (Build.VERSION.SDK_INT >= 30) {
                     ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_30, 0)
-                }else{
+                } else {
                     ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_29, 0)
                 }
             }
@@ -430,6 +442,23 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         webView.onPause()
     }
+
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.menu_logout, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if (item.itemId == R.id.signOut) {
+//            FirebaseAuth.getInstance().signOut()
+//            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
+
 
 }
 

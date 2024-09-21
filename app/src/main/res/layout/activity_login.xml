@@ -8,8 +8,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
     android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".LoginPage">
+    android:orientation="horizontal"
+    tools:context=".LoginActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -37,19 +37,19 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/username"
+                android:id="@+id/editTextEmailSignin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="40dp"
                 android:background="@drawable/custom_edittext"
-                android:drawableLeft="@drawable/icon_user"
+                android:drawableLeft="@drawable/icon_email"
                 android:drawablePadding="8dp"
-                android:hint="Username"
+                android:hint="Enter email"
                 android:padding="8dp"
                 android:textColor="@color/black" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/editTextPasswordSignin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
@@ -62,7 +62,7 @@
                 android:textColor="@color/black" />
 
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/buttonSignin"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
@@ -70,6 +70,35 @@
                 android:text="Login"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
+
+            <Button
+                android:id="@+id/buttonSignup"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/purple"
+                android:text="SIGN UP"
+                android:textSize="16sp"
+                app:cornerRadius="20dp" />
+
+            <CheckBox
+                android:id="@+id/termsCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I agree to the Terms and Conditions" />
+
+            <Button
+                android:id="@+id/buttonForgot"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="30dp"
+                android:background="@null"
+                android:backgroundTint="@color/white"
+                android:text="password reset"
+                android:textColor="#373535"
+                android:textSize="14sp"
+                app:cornerRadius="20dp" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

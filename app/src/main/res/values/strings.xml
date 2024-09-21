@@ -22,6 +22,7 @@
     <string name="logPrefTitle">ログ管理</string>
     <string name="uploadPrefTitle">ログ・DBアップロード</string>
     <string name="locationPrefTitle">ログ用・現在地</string>
+    <string name="logout">ログアウト</string>
 
     <string-array name="list_entries">
         <item>動画再生（ファイル）</item>
