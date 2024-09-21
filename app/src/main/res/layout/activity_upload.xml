@@ -5,6 +5,7 @@
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/mainpage"
     tools:context=".fileuploader.UploadActivity">
 
     <LinearLayout
@@ -21,9 +22,9 @@
         <ImageView
             android:id="@+id/file_view"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="150dp"
             android:layout_margin="24dp"
-            app:srcCompat="@drawable/logo" />
+            app:srcCompat="@drawable/icon_file" />
 
         <TextView
             android:id="@+id/textView"
@@ -51,10 +52,12 @@
         android:id="@+id/button_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

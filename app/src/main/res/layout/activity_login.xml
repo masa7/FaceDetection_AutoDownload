@@ -6,7 +6,7 @@
     style="@style/Theme.FaceDetection"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg"
+    android:background="@drawable/mainpage"
     android:gravity="center"
     android:orientation="horizontal"
     tools:context=".authentication.LoginActivity">
@@ -68,7 +68,7 @@
                 android:id="@+id/buttonSignin"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/purple"
                 android:text="@string/Login"
                 android:textSize="18sp"
@@ -78,9 +78,9 @@
                 android:id="@+id/buttonSignup"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/purple"
-                android:text="@string/SIGN_UP"
+                android:text="@string/SIGN_UP_FRONT"
                 android:textSize="16sp"
                 app:cornerRadius="20dp" />
 
@@ -94,7 +94,7 @@
                 android:id="@+id/buttonForgot"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="3dp"
                 android:background="@null"
                 android:backgroundTint="@color/white"
                 android:text="@string/password_reset"

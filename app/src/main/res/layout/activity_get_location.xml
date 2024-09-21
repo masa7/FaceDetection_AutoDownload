@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/osakabg"
+    android:background="@drawable/icon_map"
     android:padding="4dp"
     tools:context=".gps.GetLocation">
 
@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:padding="5dp"
-        android:text="powered by Em@rth"
+        android:text="@string/powered_by"
         android:textColor="#3F3F42"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Current GPS Location"
+        android:text="@string/Current_Location"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -36,6 +36,6 @@
         android:layout_below="@+id/text"
         android:layout_centerInParent="true"
         android:layout_marginTop="40dp"
-        android:backgroundTint="#28E130"
-        android:text="Get location" />
+        android:backgroundTint="#8692f7"
+        android:text="@string/Get_location" />
 </RelativeLayout>
