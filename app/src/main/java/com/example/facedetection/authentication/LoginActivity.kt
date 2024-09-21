@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.facedetection.MainActivity
+import com.example.facedetection.R
 import com.example.facedetection.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -21,6 +22,9 @@ class LoginActivity : AppCompatActivity() {
         loginBinding = ActivityLoginBinding.inflate(layoutInflater)
         val view = loginBinding.root
         setContentView(view)
+
+        supportActionBar?.setDisplayShowCustomEnabled(true)
+        supportActionBar?.setCustomView(R.layout.toolbar_title_layout)
 
         val tv = loginBinding.loginText
         val face: Typeface = Typeface.createFromAsset(
