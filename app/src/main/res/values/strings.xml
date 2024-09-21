@@ -11,6 +11,9 @@
     <string name="rb_foreground">顔検知テスト</string>
     <string name="settings_title">設定</string>
 
+    <string name="loginpage">Your Ad: Where It Belongs</string>
+
+
     <string name="dlPrefTitle">動画ダウンロード実行日</string>
     <string name="videoCatTitle">動画設定</string>
     <string name="videoPrefTitle1">動画ファイル</string>
