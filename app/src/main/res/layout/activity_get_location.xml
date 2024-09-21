@@ -14,10 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
-        android:background="#008080"
         android:padding="5dp"
         android:text="powered by Em@rth"
-        android:textColor="#fff"
+        android:textColor="#3F3F42"
         android:textSize="24sp"
         android:textStyle="bold" />
 
