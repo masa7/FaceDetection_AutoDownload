@@ -26,15 +26,15 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <TextView
-                android:id="@+id/ResetText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Reset Password"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="36sp"
-                android:textStyle="bold" />
+<!--            <TextView-->
+<!--                android:id="@+id/ResetText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Reset Password"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="36sp"-->
+<!--                android:textStyle="bold" />-->
 
             <EditText
                 android:id="@+id/editTextReset"

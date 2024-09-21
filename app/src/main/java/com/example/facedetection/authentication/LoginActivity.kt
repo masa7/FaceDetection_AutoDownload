@@ -1,12 +1,17 @@
 package com.example.facedetection.authentication
 
+import android.R
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.facedetection.MainActivity
 import com.example.facedetection.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -19,6 +24,14 @@ class LoginActivity : AppCompatActivity() {
         loginBinding = ActivityLoginBinding.inflate(layoutInflater)
         val view = loginBinding.root
         setContentView(view)
+
+        val tv = loginBinding.loginText
+        val face: Typeface = Typeface.createFromAsset(
+            assets,
+            "Sacramento-Regular.ttf"
+        )
+        tv.setTypeface(face)
+
 
         loginBinding.buttonSignin.setOnClickListener {
 
