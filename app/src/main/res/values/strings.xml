@@ -25,6 +25,9 @@
     <string name="powered_by">powered by Em@rth</string>
     <string name="Current_Location">Current GPS Location</string>
     <string name="Get_location">Get Location</string>
+    <string name="Upload">Upload</string>
+    <string name="File_Upload">Tap to Select File &amp; Press Upload</string>
+
 
 
     <string name="dlPrefTitle">動画ダウンロード実行日</string>
