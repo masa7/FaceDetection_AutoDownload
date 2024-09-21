@@ -54,19 +54,10 @@ class SettingsFragment: PreferenceFragmentCompat(){
             true
         }
 
-
-        this.findPreference<Preference>("ulPreference")?.setOnPreferenceClickListener {
-            val intent = Intent(context, UploadActivity::class.java)
+        this.findPreference<Preference>("logPreference")?.setOnPreferenceClickListener {
+            val intent = Intent(context, LogdataActivity::class.java)
             activity?.startActivity(intent)
             true
-
-        }
-
-        this.findPreference<Preference>("currentLocation")?.setOnPreferenceClickListener {
-            val intent = Intent(context, GetLocation::class.java)
-            activity?.startActivity(intent)
-            true
-
         }
 
         this.findPreference<Preference>("logout")?.setOnPreferenceClickListener {
@@ -77,5 +68,16 @@ class SettingsFragment: PreferenceFragmentCompat(){
             true
         }
 
+        this.findPreference<Preference>("ulPreference")?.setOnPreferenceClickListener {
+            val intent = Intent(context, UploadActivity::class.java)
+            activity?.startActivity(intent)
+            true
+        }
+
+        this.findPreference<Preference>("currentLocation")?.setOnPreferenceClickListener {
+            val intent = Intent(context, GetLocation::class.java)
+            activity?.startActivity(intent)
+            true
+        }
     }
 }

@@ -4,13 +4,13 @@
     android:id="@+id/settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/mainpage"
     tools:context=".SettingsActivity">
 
     <FrameLayout
         android:id="@+id/settingsFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

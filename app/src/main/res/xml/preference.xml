@@ -5,11 +5,22 @@
     <PreferenceCategory
         app:title="@string/listCatTitle">
         <ListPreference
-            android:defaultValue="2"
+            android:defaultValue="1"
             app:entries="@array/list_entries"
             app:entryValues="@array/list_values"
             app:key="listPreference"
             app:title="@string/listPrefTitle"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/list2CatTitle">
+        <ListPreference
+            android:defaultValue="1"
+            app:entries="@array/list2_entries"
+            app:entryValues="@array/list2_values"
+            app:key="list2Preference"
+            app:title="@string/list2PrefTitle"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
@@ -31,26 +42,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/list2CatTitle">
-        <ListPreference
-            android:defaultValue="1"
-            app:entries="@array/list2_entries"
-            app:entryValues="@array/list2_values"
-            app:key="list2Preference"
-            app:title="@string/list2PrefTitle"
-            app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         app:title="@string/logPrefTitle">
         <Preference
             android:defaultValue="未実行"
-            app:key="ulPreference"
-            app:title="@string/uploadPrefTitle" />
-        <Preference
-            android:defaultValue="未実行"
-            app:key="currentLocation"
-            app:title="@string/locationPrefTitle" />
+            app:key="logPreference"
+            app:title="@string/logdataPrefTitle" />
     </PreferenceCategory>
 
     <PreferenceCategory

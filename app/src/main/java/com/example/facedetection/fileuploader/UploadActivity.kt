@@ -120,5 +120,4 @@ class UploadActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         binding.progressBar.progress = percentage
     }
 
-
 }

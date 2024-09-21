@@ -21,8 +21,10 @@ interface MyAPI {
     companion object {
         operator fun invoke(): MyAPI {
             return Retrofit.Builder()
-                .baseUrl("http://10.0.2.2/FileUploader/")
+                //.baseUrl("http://10.0.2.2/FileUploader/")
                 //.baseUrl("http://xxx.xxx.x.xxx/FileUploader/")  //*check ipconfig for localhost
+                //.baseUrl("http://172.20.10.4/FileUploader/")  //*check ipconfig for localhost
+                .baseUrl("http://192.168.3.17/FileUploader/")  //*check ipconfig for localhost
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(MyAPI::class.java)

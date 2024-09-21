@@ -32,6 +32,10 @@ class FileUtils(fileName: String, StorageType: String) {
         //contentResolver = ctx2.contentResolver
     }
 
+    fun isFirstRun(): Boolean{
+        return !file.exists()
+    }
+
     fun save(str: String?){
         if(storageType == "1"){
             saveFile(str)

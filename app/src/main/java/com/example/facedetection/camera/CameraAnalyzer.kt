@@ -3,6 +3,7 @@ package com.example.facedetection.camera
 import android.graphics.Rect
 import java.time.LocalDateTime
 import android.util.Log
+import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.google.android.gms.tasks.Task
@@ -34,7 +35,7 @@ class CameraAnalyzer(
         cameraSide = initialCameraSide
 
         //val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        file = FileUtils("Log_${dateStr}.txt", storageType)
+        file = FileUtils(abbrFaceDetectionLog + dateStr + ".txt", storageType)
         intervalSec = 1
         prevSec = 0
         fsFlag = false

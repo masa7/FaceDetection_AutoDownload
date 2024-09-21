@@ -1,6 +1,7 @@
 package com.example.facedetection.camera
 
 import android.util.Log
+import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.google.android.gms.tasks.Task
@@ -24,7 +25,7 @@ class bgCameraAnalyzer() : bgBaseCameraAnalyzer<List<Face>>() {
 
     init {
         //val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-        file = FileUtils("Log_${dateStr}.txt", storageType)
+        file = FileUtils(abbrFaceDetectionLog+ dateStr + ".txt", storageType)
         intervalSec = 1
         prevSec = 0
     }

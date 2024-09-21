@@ -29,7 +29,6 @@
     <string name="File_Upload">Tap to Select File &amp; Press Upload</string>
 
 
-
     <string name="dlPrefTitle">動画ダウンロード実行日</string>
     <string name="videoCatTitle">動画設定</string>
     <string name="videoPrefTitle1">動画ファイル</string>
@@ -38,23 +37,22 @@
     <string name="listPrefTitle">実行モード</string>
     <string name="list2CatTitle">カメラ</string>
     <string name="list2PrefTitle">カメラ選択</string>
-    <string name="logPrefTitle">ログ管理</string>
+    <string name="logPrefTitle">データ</string>
+    <string name="logdataPrefTitle">ログ表示</string>
     <string name="uploadPrefTitle">ログ・DBアップロード</string>
     <string name="locationPrefTitle">ログ用・現在地</string>
     <string name="logout">ログアウト</string>
 
     <string-array name="list_entries">
+        <item>カメラ・テスト</item>
         <item>動画再生（ファイル）</item>
         <item>動画再生（URL）</item>
-        <item>ログ確認</item>
-        <item>カメラ・テスト</item>
     </string-array>
 
     <string-array name="list_values">
         <item>1</item>
         <item>2</item>
         <item>3</item>
-        <item>4</item>
     </string-array>
 
     <string-array name="list2_entries">

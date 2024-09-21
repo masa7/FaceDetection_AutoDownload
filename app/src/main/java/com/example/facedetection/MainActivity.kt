@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Handler
 import android.os.Build
 import android.os.Bundle
@@ -20,22 +21,44 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
+import com.example.facedetection.MainActivity.Global.Companion.abbrDataLog
+import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
+import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
+import com.example.facedetection.MainActivity.Global.Companion.dateFormatter
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
+import com.example.facedetection.MainActivity.Global.Companion.holdDays
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
+import com.example.facedetection.fileuploader.MyAPI
+import com.example.facedetection.fileuploader.UploadRequestBody
+import com.example.facedetection.fileuploader.UploadResponse
+import com.example.facedetection.fileuploader.getFileName
 import com.example.facedetection.utils.FileUtils
+import com.example.facedetection.utils.SingletonContext
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var cameraManager: CameraManager
@@ -43,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var videoView: VideoView
     private lateinit var webView: WebView
     private var file: FileUtils
-
+    private var selectedFileUri: Uri? = null
 
     private val REQUIRED_PERMISSIONS_29 = arrayOf(
         android.Manifest.permission.CAMERA,
@@ -73,13 +96,18 @@ class MainActivity : AppCompatActivity() {
             // set EMarth download URL to above currentUrl global variable
 
             // 1: Internal Storage, 2: External Storage(Download folder)
-            val storageType: String = "2"
-            val dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+            val storageType: String = "1"
+            val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+            val dateStr = LocalDateTime.now().format(dateFormatter)
+            val abbrFaceDetectionLog = "Log_"
+            val abbrTransferredFile = "Done_"
+            val abbrDataLog = "DataLog"
+            val holdDays = 2
         }
     }
 
     init {
-        file = FileUtils("Log_${dateStr}.txt", storageType)
+        file = FileUtils(abbrFaceDetectionLog + dateStr + ".txt", storageType)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -230,25 +258,25 @@ class MainActivity : AppCompatActivity() {
         binding.downloadbtn.isVisible = false
 
         when (execMode) {
-            "1" -> { // video play: local file
+            "2" -> { // video play: local file
                 videoView.isVisible = true
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
                 binding.rotatebtn.isVisible = false
                 binding.downloadbtn.isVisible = false
             }
 
-            "2" -> { // video play: YouTube
+            "3" -> { // video play: YouTube
                 //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 webView.isVisible = true
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             }
 
-            "3" -> { // background log file check
+            "4" -> { // background log file check
                 //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                 binding.counterText.isVisible = true
             }
 
-            "4" -> { // face detection test
+            "1" -> { // face detection camera test
                 //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                 binding.viewGraphicOverlay.isVisible = true
                 binding.viewCameraPreview.isVisible = true
@@ -268,29 +296,39 @@ class MainActivity : AppCompatActivity() {
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
         handler.post(timer)
 
+        if(file.isFirstRun()) {
+            Toast.makeText(
+                this,
+                "First run for today: " + file.isFirstRun(),
+                Toast.LENGTH_SHORT
+            ).show()
+            transferFile()
+            deleteFile()
+        }
+
         file.save(dateAndTime)
         file.save(", mode=")
         file.save(execMode + cameraSide)
         file.save("\n")
 
         when (execMode) {
-            "1" -> { // video play: local file
+            "2" -> { // video play: local file
                 playVideoFile()
                 bg_cameraManager.cameraStart(cameraSide)
             }
 
-            "2" -> { // video play: YouTube
+            "3" -> { // video play: YouTube
                 playVideoUrl()
                 bg_cameraManager.cameraStart(cameraSide)
             }
 
-            "3" -> { // background log file check
+            "4" -> { // background log file check
                 //playVideoFile()
                 binding.counterText.text = getString(R.string.logmode_msg)
                 bg_cameraManager.cameraStart(cameraSide)
             }
 
-            "4" -> { // face detection test
+            "1" -> { // face detection camera test
                 cameraManager.cameraStart(cameraSide)
             }
         }
@@ -307,23 +345,23 @@ class MainActivity : AppCompatActivity() {
         handler.removeCallbacks(timer)
 
         when (execMode) {
-            "1" -> { // video play: local file
+            "2" -> { // video play: local file
                 stopVideoFile()
                 bg_cameraManager.cameraStop()
                 binding.rotatebtn.isVisible = false
             }
 
-            "2" -> { // video play: YouTube
+            "3" -> { // video play: YouTube
                 webView.onPause()
                 bg_cameraManager.cameraStop()
             }
 
-            "3" -> { // background log file check
+            "4" -> { // background log file check
                 getDetectionFile()
                 bg_cameraManager.cameraStop()
             }
 
-            "4" -> { // face detection test
+            "1" -> { // face detection test
                 cameraManager.cameraStop()
             }
         }
@@ -437,6 +475,113 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         webView.onPause()
+    }
+
+    override fun onProgressUpdate(percentage: Int) {
+        //do nothing
+        //binding.progressBar.progress = percentage
+    }
+
+    private fun deleteFile(){
+        val transferLog = FileUtils(abbrDataLog + ".txt", "2")
+        val ctx = SingletonContext.applicationContext()
+        val fileLoc = ctx.filesDir
+        val fileList = fileLoc.list()?.filter{ it.startsWith(abbrTransferredFile) }
+
+        fileList?.forEach {
+            val yyyymmdd = it.substring(abbrTransferredFile.length, abbrTransferredFile.length + 8)
+            val elapsedDays = ChronoUnit.DAYS.between(LocalDate.parse(yyyymmdd, dateFormatter), LocalDate.parse(dateStr, dateFormatter))
+
+            if(elapsedDays > holdDays){
+                val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                val deleteFilePath = File(fileLoc, it)
+                val result = deleteFilePath.delete()
+                if(result){
+                    transferLog.save(dateAndTime + ", ")
+                    transferLog.save("file was deleted: " + deleteFilePath.toString())
+                }
+                Toast.makeText(
+                    this,
+                    "データ・クリーンアップが完了しました",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun transferFile() {
+        val transferLog = FileUtils(abbrDataLog + ".txt", "2")
+        val ctx = SingletonContext.applicationContext()
+        val fileLoc = ctx.filesDir
+        val fileList = fileLoc.list()?.filter { it.startsWith(abbrFaceDetectionLog) }
+
+        fileList?.forEach {
+            val filePath = File(fileLoc, it)
+            val newFileName = it.replace(abbrFaceDetectionLog, abbrTransferredFile)
+            val newFilePath = File(fileLoc, newFileName)
+            selectedFileUri = FileProvider.getUriForFile(
+                this,
+                applicationContext.packageName + ".provider",
+                filePath
+            )
+
+            // Obtain the ParcelFileDescriptor
+            val parcelFileDescriptor =
+                contentResolver.openFileDescriptor(selectedFileUri!!, "r", null)
+
+            try {
+                // Use the ParcelFileDescriptor
+                val inputStream = FileInputStream(parcelFileDescriptor?.fileDescriptor)
+                val file = File(cacheDir, contentResolver.getFileName(selectedFileUri!!))
+                val outputStream = FileOutputStream(file)
+                inputStream.copyTo(outputStream)
+
+                // Upload the file
+                //binding.progressBar.progress = 0
+                val body = UploadRequestBody(file, "image", this)
+                MyAPI().uploadFile(
+                    MultipartBody.Part.createFormData(
+                        "image",
+                        file.name,
+                        body
+                    ),
+                    RequestBody.create(MediaType.parse("multipart/form-data"), "json")
+                ).enqueue(object : Callback<UploadResponse> {
+                    override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                        //binding.layoutRoot.snackbar(t.message!!)
+                        //binding.progressBar.progress = 0
+                        val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                        transferLog.save(dateAndTime + ", ")
+                        transferLog.save("transfer file=" + file.toString() + ": NG\n")
+                    }
+
+                    override fun onResponse(
+                        call: Call<UploadResponse>,
+                        response: Response<UploadResponse>
+                    ) {
+                        response.body()?.let {
+                            //binding.layoutRoot.snackbar(it.message)
+                            //binding.progressBar.progress = 100
+                            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                            transferLog.save(dateAndTime + ", ")
+                            transferLog.save("transfer file=" + file.toString() + ": OK\n")
+                            filePath.renameTo(newFilePath)
+                            transferLog.save(dateAndTime + ", ")
+                            transferLog.save("file was renamed to " + newFileName + "\n")
+                        }
+                    }
+                })
+
+            } finally {
+                // Ensure that the ParcelFileDescriptor is closed
+                try {
+                    parcelFileDescriptor?.close()
+                } catch (e: IOException) {
+                    // Handle the exception if needed
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
 }
