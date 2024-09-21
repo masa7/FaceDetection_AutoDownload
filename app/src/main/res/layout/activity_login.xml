@@ -46,7 +46,8 @@
                 android:drawablePadding="8dp"
                 android:hint="Enter email"
                 android:padding="8dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:importantForAutofill="no"/>
 
             <EditText
                 android:id="@+id/editTextPasswordSignin"
@@ -59,7 +60,8 @@
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:padding="8dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:importantForAutofill="no"/>
 
             <Button
                 android:id="@+id/buttonSignin"
