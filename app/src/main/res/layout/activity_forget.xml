@@ -47,7 +47,8 @@
                 android:hint="Enter email address"
                 android:inputType="textEmailAddress"
                 android:padding="8dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:importantForAutofill="no"/>
 
             <Button
                 android:id="@+id/buttonReset"
