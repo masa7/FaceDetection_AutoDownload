@@ -1,19 +1,19 @@
 package com.example.facedetection
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
-import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
-import com.example.facedetection.utils.SingletonContext
+import com.example.facedetection.authentication.LoginActivity
+import com.example.facedetection.gps.GetLocation
+import com.example.facedetection.fileuploader.UploadActivity
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
+import com.example.facedetection.videodownload.AndroidDownloader
 import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

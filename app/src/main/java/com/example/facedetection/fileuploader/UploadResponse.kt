@@ -1,4 +1,4 @@
-package com.example.facedetection
+package com.example.facedetection.fileuploader
 
 data class UploadResponse(
     val error: Boolean,

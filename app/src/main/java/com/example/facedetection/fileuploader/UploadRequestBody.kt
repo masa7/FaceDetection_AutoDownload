@@ -1,4 +1,4 @@
-package com.example.facedetection
+package com.example.facedetection.fileuploader
 
 import android.os.Handler
 import android.os.Looper

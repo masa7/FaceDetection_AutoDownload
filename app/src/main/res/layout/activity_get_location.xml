@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/osakabg"
     android:padding="4dp"
-    tools:context=".GetLocation">
+    tools:context=".gps.GetLocation">
 
     <TextView
         android:id="@+id/text"

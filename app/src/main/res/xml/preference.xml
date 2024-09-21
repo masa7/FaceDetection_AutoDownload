@@ -51,6 +51,10 @@
             android:defaultValue="未実行"
             app:key="currentLocation"
             app:title="@string/locationPrefTitle" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="">
         <Preference
             android:defaultValue="logout"
             app:key="logout"

@@ -1,4 +1,4 @@
-package com.example.facedetection
+package com.example.facedetection.gps
 
 import android.Manifest
 import android.content.Context
@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.facedetection.R
 
 class GetLocation : AppCompatActivity(), LocationListener {
 

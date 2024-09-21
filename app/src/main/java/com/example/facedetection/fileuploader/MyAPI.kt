@@ -1,4 +1,4 @@
-package com.example.facedetection
+package com.example.facedetection.fileuploader
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

@@ -9,10 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
-import android.os.PersistableBundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -33,7 +30,6 @@ import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
 import com.example.facedetection.utils.FileUtils
-import com.google.firebase.auth.FirebaseAuth
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -442,23 +438,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         webView.onPause()
     }
-
-
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.menu_logout, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if (item.itemId == R.id.signOut) {
-//            FirebaseAuth.getInstance().signOut()
-//            val intent = Intent(this@MainActivity, LoginActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
 
 }
 

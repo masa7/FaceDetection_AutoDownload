@@ -1,9 +1,10 @@
-package com.example.facedetection
+package com.example.facedetection.authentication
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.facedetection.MainActivity
 import com.example.facedetection.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -49,6 +50,17 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginBinding.buttonSignup.setOnClickListener {
+
+            val termsCheckBox = loginBinding.termsCheckBox
+
+            if (!termsCheckBox.isChecked) {
+                Toast.makeText(
+                    applicationContext,
+                    "You must agree to the Terms and Conditions.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
 
             val intent = Intent(this@LoginActivity, SignupActivity::class.java)
             startActivity(intent)

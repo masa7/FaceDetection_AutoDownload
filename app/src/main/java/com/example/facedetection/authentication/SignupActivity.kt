@@ -1,4 +1,4 @@
-package com.example.facedetection
+package com.example.facedetection.authentication
 
 import android.os.Bundle
 import android.widget.Toast

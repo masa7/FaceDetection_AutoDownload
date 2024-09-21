@@ -9,7 +9,7 @@
     android:background="@drawable/login_bg"
     android:gravity="center"
     android:orientation="horizontal"
-    tools:context=".LoginActivity">
+    tools:context=".authentication.LoginActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
