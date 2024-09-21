@@ -16,7 +16,10 @@
     <string name="passwordreset">password reset</string>
     <string name="SIGNUP">SIGN UP</string>
     <string name="Login">Login</string>
+    <string name="Password">Password</string>
     <string name="RESETMYPASSWORD">RESET MY PASSWORD</string>
+    <string name="Enteremail">Enter email</string>
+    <string name="Enteremailaddress">Enter email address</string>
 
     <string name="dlPrefTitle">動画ダウンロード実行日</string>
     <string name="videoCatTitle">動画設定</string>
