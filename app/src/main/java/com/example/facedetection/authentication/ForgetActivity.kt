@@ -3,6 +3,7 @@ package com.example.facedetection.authentication
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.facedetection.R
 import com.example.facedetection.databinding.ActivityForgetBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -17,6 +18,9 @@ class ForgetActivity : AppCompatActivity() {
         forgetBinding = ActivityForgetBinding.inflate(layoutInflater)
         val view = forgetBinding.root
         setContentView(view)
+
+        supportActionBar?.setDisplayShowCustomEnabled(true)
+        supportActionBar?.setCustomView(R.layout.toolbar_title_layout)
 
         forgetBinding.buttonReset.setOnClickListener {
 
