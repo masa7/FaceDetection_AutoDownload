@@ -21,9 +21,11 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.abbrDataLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
@@ -40,6 +42,7 @@ import com.example.facedetection.fileuploader.MyAPI
 import com.example.facedetection.fileuploader.UploadRequestBody
 import com.example.facedetection.fileuploader.UploadResponse
 import com.example.facedetection.fileuploader.getFileName
+import com.example.facedetection.utils.BaseActivity
 import com.example.facedetection.utils.FileUtils
 import com.example.facedetection.utils.SingletonContext
 import okhttp3.MediaType
@@ -58,7 +61,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 
-class MainActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
+class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var cameraManager: CameraManager
@@ -102,7 +105,7 @@ class MainActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             val abbrFaceDetectionLog = "Log_"
             val abbrTransferredFile = "Done_"
             val abbrDataLog = "DataLog"
-            val holdDays = 2
+            val holdDays = 10
         }
     }
 
@@ -498,7 +501,7 @@ class MainActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                 val result = deleteFilePath.delete()
                 if(result){
                     transferLog.save(dateAndTime + ", ")
-                    transferLog.save("file was deleted: " + deleteFilePath.toString())
+                    transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
                 }
                 Toast.makeText(
                     this,

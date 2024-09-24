@@ -3,13 +3,15 @@ package com.example.facedetection
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.databinding.ActivityLogdataBinding
+import com.example.facedetection.utils.BaseActivity
 import com.example.facedetection.utils.FileUtils
 
-class LogdataActivity : AppCompatActivity() {
+class LogdataActivity : BaseActivity() {
     private val binding by lazy { ActivityLogdataBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
