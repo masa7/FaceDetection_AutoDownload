@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.storageType
+import com.example.facedetection.MainActivity.Global.Companion.userEmail
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
@@ -65,11 +66,10 @@ class bgCameraAnalyzer() : bgBaseCameraAnalyzer<List<Face>>() {
 
                     if (id in idList) {
                         // save data into file
-                        file.save(dateAndTime)
-                        file.save(", ")
-                        file.save(id.toString())
-                        file.save(", ")
-                        file.save(rotationDegree.toString())
+                        file.save(dateAndTime + ", ")
+                        file.save(id.toString() + ", ")
+                        file.save(rotationDegree.toString() + ", ")
+                        file.save(userEmail)
                         file.save("\n")
                     } else {
                         idList.add(id)

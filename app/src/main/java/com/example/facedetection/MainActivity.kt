@@ -35,6 +35,7 @@ import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.MainActivity.Global.Companion.holdDays
 import com.example.facedetection.MainActivity.Global.Companion.storageType
+import com.example.facedetection.MainActivity.Global.Companion.userEmail
 import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
@@ -45,6 +46,7 @@ import com.example.facedetection.fileuploader.getFileName
 import com.example.facedetection.utils.BaseActivity
 import com.example.facedetection.utils.FileUtils
 import com.example.facedetection.utils.SingletonContext
+import com.google.firebase.auth.FirebaseAuth
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -94,6 +96,9 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     public class Global : Application() {
         companion object {
             @JvmField
+            val auth: FirebaseAuth = FirebaseAuth.getInstance()
+            val userEmail = auth.currentUser?.email
+
             var emarthUrl: String =
                 "https://www.pexels.com/download/video/5692315-hd_1920_1080_30fps.mp4"
             // set EMarth download URL to above currentUrl global variable
@@ -105,7 +110,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             val abbrFaceDetectionLog = "Log_"
             val abbrTransferredFile = "Done_"
             val abbrDataLog = "DataLog"
-            val holdDays = 10
+            val holdDays = 5
         }
     }
 
@@ -295,9 +300,15 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val execMode = sharedPref?.getString("listPreference", "2")
         val cameraSide = sharedPref?.getString("list2Preference", "1") ?: "1"
-        val dateAndTime =
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+        val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+        val dd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd")).toInt()
+
         handler.post(timer)
+
+        if(dd % holdDays == 0){
+            deleteFile()
+            clearCache()
+        }
 
         if(file.isFirstRun()) {
             Toast.makeText(
@@ -306,12 +317,11 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 Toast.LENGTH_SHORT
             ).show()
             transferFile()
-            deleteFile()
         }
 
-        file.save(dateAndTime)
-        file.save(", mode=")
-        file.save(execMode + cameraSide)
+        file.save(dateAndTime + ", ")
+        file.save("LaunchApp, Mode=" + execMode + cameraSide + ", ")
+        file.save(userEmail)
         file.save("\n")
 
         when (execMode) {
@@ -485,12 +495,43 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         //binding.progressBar.progress = percentage
     }
 
+    private fun clearCache(){
+        val transferLog = FileUtils(abbrDataLog + ".txt", "2")
+        val ctx = SingletonContext.applicationContext()
+
+        val cacheLoc = ctx.cacheDir
+        val logList = cacheLoc.list()?.filter{ it.startsWith(abbrFaceDetectionLog) }
+        val doneList = cacheLoc.list()?.filter{ it.startsWith(abbrTransferredFile) }
+
+        // delete face detection log file in cache
+        logList?.forEach {
+            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+            val deleteFilePath = File(cacheLoc, it)
+            val result = deleteFilePath.delete()
+            if(result){
+                transferLog.save(dateAndTime + ", ")
+                transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
+            }
+        }
+        // delete transferred file in cache
+        doneList?.forEach {
+            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+            val deleteFilePath = File(cacheLoc, it)
+            val result = deleteFilePath.delete()
+            if(result){
+                transferLog.save(dateAndTime + ", ")
+                transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
+            }
+        }
+    }
+
     private fun deleteFile(){
         val transferLog = FileUtils(abbrDataLog + ".txt", "2")
         val ctx = SingletonContext.applicationContext()
         val fileLoc = ctx.filesDir
         val fileList = fileLoc.list()?.filter{ it.startsWith(abbrTransferredFile) }
 
+        // delete transferred file in local folder
         fileList?.forEach {
             val yyyymmdd = it.substring(abbrTransferredFile.length, abbrTransferredFile.length + 8)
             val elapsedDays = ChronoUnit.DAYS.between(LocalDate.parse(yyyymmdd, dateFormatter), LocalDate.parse(dateStr, dateFormatter))
