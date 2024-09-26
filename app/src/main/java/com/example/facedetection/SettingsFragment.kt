@@ -10,8 +10,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.authentication.LoginActivity
-import com.example.facedetection.gps.GetLocation
-import com.example.facedetection.fileuploader.UploadActivity
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
 import com.example.facedetection.videodownload.AndroidDownloader
 import com.google.firebase.auth.FirebaseAuth
@@ -68,16 +66,5 @@ class SettingsFragment: PreferenceFragmentCompat(){
             true
         }
 
-        this.findPreference<Preference>("ulPreference")?.setOnPreferenceClickListener {
-            val intent = Intent(context, UploadActivity::class.java)
-            activity?.startActivity(intent)
-            true
-        }
-
-        this.findPreference<Preference>("currentLocation")?.setOnPreferenceClickListener {
-            val intent = Intent(context, GetLocation::class.java)
-            activity?.startActivity(intent)
-            true
-        }
     }
 }

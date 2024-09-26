@@ -6,7 +6,6 @@
     style="@style/Theme.FaceDetection"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/mainpage"
     android:gravity="center"
     android:orientation="horizontal"
     tools:context=".authentication.LoginActivity">
@@ -26,7 +25,7 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <TextView
+            <!--TextView
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +33,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textStyle="bold" /-->
 
             <EditText
                 android:id="@+id/editTextEmailSignin"

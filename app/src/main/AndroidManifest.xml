@@ -50,12 +50,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gps.GetLocation"
-            android:exported="false" />
-        <activity
-            android:name=".fileuploader.UploadActivity"
-            android:exported="false" />
-        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity

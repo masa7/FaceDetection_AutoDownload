@@ -32,6 +32,7 @@ import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetection
 import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
 import com.example.facedetection.MainActivity.Global.Companion.dateFormatter
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
+import com.example.facedetection.MainActivity.Global.Companion.debugFlag
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.MainActivity.Global.Companion.holdDays
 import com.example.facedetection.MainActivity.Global.Companion.storageType
@@ -111,6 +112,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             val abbrTransferredFile = "Done_"
             val abbrDataLog = "DataLog"
             val holdDays = 5
+            val debugFlag = false
         }
     }
 
@@ -212,6 +214,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 "One of Permissions (Camera, Write/Read external storage Denied!",
                 Toast.LENGTH_SHORT
             ).show()
+
         }
     }
 
@@ -246,8 +249,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 detectAndPlayStop()
                 binding.buttonStopCamera.isVisible = false
                 binding.buttonStartCamera.isVisible = true
-                binding.rotatebtn.isVisible = false
-                binding.downloadbtn.isVisible = false
             }
         }
     }
@@ -262,15 +263,11 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         webView.isVisible = false
         videoView.isVisible = false
         binding.counterText.isVisible = false
-        binding.rotatebtn.isVisible = false
-        binding.downloadbtn.isVisible = false
 
         when (execMode) {
             "2" -> { // video play: local file
                 videoView.isVisible = true
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-                binding.rotatebtn.isVisible = false
-                binding.downloadbtn.isVisible = false
             }
 
             "3" -> { // video play: YouTube
@@ -311,11 +308,13 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
 
         if(file.isFirstRun()) {
-            Toast.makeText(
-                this,
-                "First run for today: " + file.isFirstRun(),
-                Toast.LENGTH_SHORT
-            ).show()
+            if(debugFlag) {
+                Toast.makeText(
+                    this,
+                    "First run for today: " + file.isFirstRun(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             transferFile()
         }
 
@@ -361,7 +360,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             "2" -> { // video play: local file
                 stopVideoFile()
                 bg_cameraManager.cameraStop()
-                binding.rotatebtn.isVisible = false
             }
 
             "3" -> { // video play: YouTube
@@ -406,25 +404,26 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
 
         if (filecnt != 0) {
-            Toast.makeText(
-                this,
-                "Playing " + videoFile,
-                Toast.LENGTH_SHORT
-            ).show()
+            if(debugFlag) {
+                Toast.makeText(
+                    this,
+                    "Playing " + videoFile,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         } else {
             videoFile = defaultFile
-            Toast.makeText(
-                this,
-                "File does not exist. Using " + defaultFile,
-                Toast.LENGTH_SHORT
-            ).show()
+            if(debugFlag){
+                Toast.makeText(
+                    this,
+                    "File does not exist. Using " + defaultFile,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         videoView.setVideoPath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + "/" + videoFile)
         videoView.start()
-
-        val hidebtn = findViewById<Button>(R.id.downloadbtn)
-        hidebtn.isVisible = false
     }
 
     private fun stopVideoFile() {
@@ -544,11 +543,13 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                     transferLog.save(dateAndTime + ", ")
                     transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
                 }
-                Toast.makeText(
-                    this,
-                    "データ・クリーンアップが完了しました",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if(debugFlag) {
+                    Toast.makeText(
+                        this,
+                        "データ・クリーンアップが完了しました",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

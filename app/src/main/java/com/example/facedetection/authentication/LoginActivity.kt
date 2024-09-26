@@ -26,13 +26,14 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowCustomEnabled(true)
         supportActionBar?.setCustomView(R.layout.toolbar_title_layout)
 
+        /*
         val tv = loginBinding.loginText
         val face: Typeface = Typeface.createFromAsset(
             assets,
             "Sacramento-Regular.ttf"
         )
         tv.setTypeface(face)
-
+        */
 
         loginBinding.buttonSignin.setOnClickListener {
 
