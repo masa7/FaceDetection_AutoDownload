@@ -62,12 +62,12 @@ dependencies {
 
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 
-    //1 Use this dependency to bundle the model with your app
+    // Use this dependency to bundle the model with your app
     implementation("com.google.mlkit:face-detection:16.1.6")
-    //2 Use this dependency to use the dynamically downloaded model in Google Play Services
+    // Use this dependency to use the dynamically downloaded model in Google Play Services
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
 
-    //3 cameraX and sync project with gradle files
+    // cameraX and sync project with gradle files
     var camerax_version = "1.3.0-alpha03"
     implementation("androidx.camera:camera-core:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
@@ -77,7 +77,7 @@ dependencies {
     implementation("androidx.camera:camera-view:${camerax_version}")
     implementation("androidx.camera:camera-extensions:${camerax_version}")
 
-    //4 Splash API
+    // Splash API
     implementation("androidx.core:core-splashscreen:1.0.0")
 
     // Firebase BOM and Firestore
@@ -117,8 +117,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
-    //implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

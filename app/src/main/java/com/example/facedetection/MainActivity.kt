@@ -122,7 +122,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()
         setContentView(binding.root)
         supportActionBar?.hide()
 
