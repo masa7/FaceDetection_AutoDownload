@@ -66,7 +66,7 @@
             <Button
                 android:id="@+id/buttonSignin"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/purple"
                 android:text="@string/Login"
@@ -76,11 +76,11 @@
             <Button
                 android:id="@+id/buttonSignup"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/purple"
                 android:text="@string/SIGN_UP_FRONT"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 app:cornerRadius="20dp" />
 
             <CheckBox
@@ -92,7 +92,7 @@
             <Button
                 android:id="@+id/buttonForgot"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="3dp"
                 android:background="@null"
                 android:backgroundTint="@color/white"
@@ -100,6 +100,42 @@
                 android:textColor="#373535"
                 android:textSize="14sp"
                 app:cornerRadius="20dp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:textColor="@color/black"
+                    android:textSize="10sp"
+                    android:layout_margin="3dp"/>
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/black" />
+
+            </LinearLayout>
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/buttonGoogleSignin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
