@@ -2,7 +2,15 @@ package com.example.facedetection.authentication
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.TextUtils
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +46,29 @@ class LoginActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayShowCustomEnabled(true)
         supportActionBar?.setCustomView(R.layout.toolbar_title_layout)
+
+        // Terms and Condition hyperlink
+        val terms = loginBinding.termsCheckBox
+        val fullText = "I agree to the Terms and Conditions"
+        val termsStart = fullText.indexOf("Terms and Conditions")
+
+        val spannableString = SpannableString(fullText).apply {
+            setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    widget.cancelPendingInputEvents()
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://emadtech.jp/legal/"))
+                    widget.context.startActivity(intent)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = true
+                }
+            }, termsStart, termsStart + "Terms and Conditions".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        terms.text = spannableString
+        terms.movementMethod = LinkMovementMethod.getInstance()
 
         /*
         val tv = loginBinding.loginText

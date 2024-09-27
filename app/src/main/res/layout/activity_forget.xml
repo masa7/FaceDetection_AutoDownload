@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:background="@color/gofuniro"
     tools:context=".authentication.ForgetActivity">
 
     <androidx.cardview.widget.CardView

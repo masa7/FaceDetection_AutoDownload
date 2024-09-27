@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="horizontal"
+    android:background="@color/gofuniro"
     tools:context=".authentication.LoginActivity">
 
     <androidx.cardview.widget.CardView
@@ -86,8 +87,7 @@
             <CheckBox
                 android:id="@+id/termsCheckBox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/TAC" />
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/buttonForgot"
