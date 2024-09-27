@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
@@ -231,20 +230,20 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
             finish()
-            firebaseGoogleAccount(account)
+            //firebaseGoogleAccount(account)
         }catch (e : ApiException){
             Toast.makeText(applicationContext,e.localizedMessage,Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun firebaseGoogleAccount(account: GoogleSignInAccount){
-        val authCredential = GoogleAuthProvider.getCredential(account.idToken, null)
-        auth.signInWithCredential(authCredential).addOnCompleteListener { task ->
-
-            if(task.isSuccessful){
-                val user = auth.currentUser
-            }else{}
-        }
-    }
+//    private fun firebaseGoogleAccount(account: GoogleSignInAccount){
+//        val authCredential = GoogleAuthProvider.getCredential(account.idToken, null)
+//        auth.signInWithCredential(authCredential).addOnCompleteListener { task ->
+//
+//            if(task.isSuccessful){
+//                val user = auth.currentUser
+//            }
+//        }
+//    }
 
 }
