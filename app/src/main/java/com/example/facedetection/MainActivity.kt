@@ -17,14 +17,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import android.widget.VideoView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.abbrDataLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
@@ -451,7 +447,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
         if (videoURL == "") {
             videoURL = defaultURL
-            Log.i("TAGY", "${videoURL}")
+            //Log.i("TAGY", "${videoURL}")
         }
 
         /* to enable YouTube functions
