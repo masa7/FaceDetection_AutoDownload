@@ -100,7 +100,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             val userEmail = auth.currentUser?.email
 
             var emarthUrl: String =
-                "https://www.pexels.com/download/video/5692315-hd_1920_1080_30fps.mp4"
+                "https://emadtech.jp/wp-content/uploads/2019/06/HeatStroke_v2.mp4"
             // set EMarth download URL to above currentUrl global variable
 
             // 1: Internal Storage, 2: External Storage(Download folder)
