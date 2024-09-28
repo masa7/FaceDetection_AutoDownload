@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
-import android.util.Log
 import android.view.MotionEvent
 import android.webkit.WebSettings
 import android.webkit.WebView
