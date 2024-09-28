@@ -1,6 +1,7 @@
 package com.example.facedetection
 
 import android.app.Application
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -17,6 +18,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import android.widget.VideoView
+import androidx.annotation.RequiresApi
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -64,6 +67,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var cameraManager: CameraManager
     private lateinit var bg_cameraManager: bgCameraManager
+    private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var videoView: VideoView
     private lateinit var webView: WebView
     private var file: FileUtils
@@ -74,12 +78,20 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-    private val REQUIRED_PERMISSIONS_30 = arrayOf(
+//    private val REQUIRED_PERMISSIONS_30 = arrayOf(
+//        android.Manifest.permission.CAMERA,
+//        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+//        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+//    )
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private val REQUIRED_PERMISSIONS_33 = arrayOf(
         android.Manifest.permission.CAMERA,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        //,android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+        android.Manifest.permission.READ_MEDIA_IMAGES,
+        android.Manifest.permission.READ_MEDIA_VIDEO,
     )
+
 
     val handler = Handler(Looper.getMainLooper())
     val timer = object : Runnable {
@@ -137,7 +149,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         webView = binding.webView
 
         //askCameraPermission()
-        askAllPermission()
+        askAllPermissions()
 
         buttonClick()
         settingsPage()
@@ -150,8 +162,8 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     }
 
     private fun allPermissionGranted(): Boolean {
-        if (Build.VERSION.SDK_INT >= 30) {
-            return REQUIRED_PERMISSIONS_30.all {
+        if (Build.VERSION.SDK_INT >= 33) {
+            return REQUIRED_PERMISSIONS_33.all {
                 ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
             }
         } else {
@@ -161,36 +173,23 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
-    private fun askAllPermission() {
+    private fun askAllPermissions() {
         if (allPermissionGranted()) {
+            Log.i("TAGY", "allpermissiongranted")
             screenSetting()
             detectAndPlayStart()
         } else {
-            if (Build.VERSION.SDK_INT >= 33) {
-                if (arrayOf(android.Manifest.permission.CAMERA).all {
-                        ContextCompat.checkSelfPermission(
-                            this,
-                            it
-                        ) == PackageManager.PERMISSION_GRANTED
-                    }) {
-                    screenSetting()
-                    detectAndPlayStart()
-                } else {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(android.Manifest.permission.CAMERA),
-                        0
-                    )
-                }
+            val permissionsToRequest = if (Build.VERSION.SDK_INT >= 33) {
+                Log.i("TAGY", "sdk33")
+                REQUIRED_PERMISSIONS_33
             } else {
-                if (Build.VERSION.SDK_INT >= 30) {
-                    ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_30, 0)
-                } else {
-                    ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS_29, 0)
-                }
+                Log.i("TAGY", "sdk29")
+                REQUIRED_PERMISSIONS_29
             }
+            ActivityCompat.requestPermissions(this, permissionsToRequest, 0)
         }
     }
+
 
     // permission for array of required functions (CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE etc)
     override fun onRequestPermissionsResult(
@@ -199,18 +198,34 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 0 && allPermissionGranted()) {
-            screenSetting()
-            detectAndPlayStart()
+        if (requestCode == 0) {
+            if (allPermissionGranted()) {
+                screenSetting()
+                detectAndPlayStart()
         } else {
             Toast.makeText(
                 this,
-                "One of Permissions (Camera, Write/Read external storage Denied!",
-                Toast.LENGTH_SHORT
-            ).show()
-
+                "One of Permissions (Camera, File access) was denied.",
+                Toast.LENGTH_SHORT).show()
+                }
         }
     }
+
+    // for API33+
+    private fun setupCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            cameraProvider = cameraProviderFuture.get() // Initialize the cameraProvider here
+            // Continue with camera setup...
+        }, ContextCompat.getMainExecutor(this))
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setupCamera() // Call setupCamera here if needed
+    }
+
+    //
 
     private fun buttonClick() {
         binding.apply {
@@ -228,9 +243,9 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     }
 
     private fun repeatVideoFile() {
-        videoView.setOnPreparedListener({
+        videoView.setOnPreparedListener {
             it.isLooping = true
-        })
+        }
     }
 
     private fun settingsPage() {
