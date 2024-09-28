@@ -226,24 +226,24 @@ class LoginActivity : AppCompatActivity() {
 
         try{
             val account : GoogleSignInAccount = task.getResult(ApiException::class.java)
-            Toast.makeText(applicationContext, "Login successful",Toast.LENGTH_SHORT).show()
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
-            finish()
-            //firebaseGoogleAccount(account)
+            firebaseGoogleAccount(account)
         }catch (e : ApiException){
             Toast.makeText(applicationContext,e.localizedMessage,Toast.LENGTH_SHORT).show()
         }
     }
 
-//    private fun firebaseGoogleAccount(account: GoogleSignInAccount){
-//        val authCredential = GoogleAuthProvider.getCredential(account.idToken, null)
-//        auth.signInWithCredential(authCredential).addOnCompleteListener { task ->
-//
-//            if(task.isSuccessful){
-//                val user = auth.currentUser
-//            }
-//        }
-//    }
+    private fun firebaseGoogleAccount(account: GoogleSignInAccount){
+        val authCredential = GoogleAuthProvider.getCredential(account.idToken, null)
+        auth.signInWithCredential(authCredential).addOnCompleteListener { task ->
+            if(task.isSuccessful){
+                Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(applicationContext, "Firebase sign-in failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 }
