@@ -432,7 +432,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private fun playVideoUrl() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val defaultURL = "https://youtu.be/yt7OM515Y58?si=zFOvrjxrwzzvR1kK"
+        val defaultURL = "https://www.youtube.com/watch?v=yt7OM515Y58"
         //val defaultURL = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/2MSyHu9bMPo?si=Y5midxW256Ybn7Qg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay=\"1\"; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
 
         var videoURL = sharedPref?.getString("videoPreference2", defaultURL) ?: defaultURL
@@ -456,7 +456,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         */
 
         webView.apply {
-            //settings.javaScriptEnabled = true
+            settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
             settings.cacheMode = WebSettings.LOAD_NO_CACHE
         }
