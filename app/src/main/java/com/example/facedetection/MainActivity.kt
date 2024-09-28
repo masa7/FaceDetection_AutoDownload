@@ -98,7 +98,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
-    public class Global : Application() {
+    class Global : Application() {
         companion object {
             @JvmField
             val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -457,7 +457,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         */
 
         webView.apply {
-            settings.javaScriptEnabled = true
+            //settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
             settings.cacheMode = WebSettings.LOAD_NO_CACHE
         }
