@@ -18,7 +18,6 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.annotation.RequiresApi
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -66,7 +65,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private lateinit var cameraManager: CameraManager
     private lateinit var bg_cameraManager: bgCameraManager
-    private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var videoView: VideoView
     private lateinit var webView: WebView
     private var file: FileUtils
@@ -174,15 +172,12 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private fun askAllPermissions() {
         if (allPermissionGranted()) {
-            Log.i("TAGY", "allpermissiongranted")
             screenSetting()
             detectAndPlayStart()
         } else {
             val permissionsToRequest = if (Build.VERSION.SDK_INT >= 33) {
-                Log.i("TAGY", "sdk33")
                 REQUIRED_PERMISSIONS_33
             } else {
-                Log.i("TAGY", "sdk29")
                 REQUIRED_PERMISSIONS_29
             }
             ActivityCompat.requestPermissions(this, permissionsToRequest, 0)
@@ -209,22 +204,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 }
         }
     }
-
-    // for API33+
-    private fun setupCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener({
-            cameraProvider = cameraProviderFuture.get() // Initialize the cameraProvider here
-            // Continue with camera setup...
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setupCamera() // Call setupCamera here if needed
-    }
-
-    //
 
     private fun buttonClick() {
         binding.apply {
