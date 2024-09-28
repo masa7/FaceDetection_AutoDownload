@@ -1,7 +1,6 @@
 package com.example.facedetection
 
 import android.app.Application
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
