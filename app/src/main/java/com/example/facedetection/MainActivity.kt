@@ -16,7 +16,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import android.widget.VideoView
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -74,19 +73,20 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-//    private val REQUIRED_PERMISSIONS_30 = arrayOf(
-//        android.Manifest.permission.CAMERA,
-//        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-//        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-//    )
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private val REQUIRED_PERMISSIONS_33 = arrayOf(
-        android.Manifest.permission.CAMERA,
-        android.Manifest.permission.READ_MEDIA_IMAGES,
-        android.Manifest.permission.READ_MEDIA_VIDEO,
-    )
+    // version sdk 33 and above
+    private val REQUIRED_PERMISSIONS_33 = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+        )
+        else -> arrayOf(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    }
 
 
     val handler = Handler(Looper.getMainLooper())
