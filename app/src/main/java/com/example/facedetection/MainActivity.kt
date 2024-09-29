@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -68,24 +69,57 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private var file: FileUtils
     private var selectedFileUri: Uri? = null
 
-    private val REQUIRED_PERMISSIONS_29 = arrayOf(
-        android.Manifest.permission.CAMERA,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
 
-    // version sdk 33 and above
-    private val REQUIRED_PERMISSIONS_33 = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_MEDIA_IMAGES,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-        )
-        else -> arrayOf(
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+    private val REQUIRED_PERMISSIONS = mutableListOf<String>().apply {
+        add(android.Manifest.permission.CAMERA)
+
+        // Add storage permissions for Android 8 (Oreo) to 12 (S)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+            add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+
+        // Add media permissions for Android 13 (TIRAMISU) and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            add(android.Manifest.permission.READ_MEDIA_IMAGES)
+            add(android.Manifest.permission.READ_MEDIA_VIDEO)
+        }
+    }.toTypedArray()
+
+
+    private fun allPermissionGranted(): Boolean {
+        return REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun askAllPermissions() {
+        if (allPermissionGranted()) {
+            screenSetting()
+            detectAndPlayStart()
+        } else {
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, 0)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 0) {
+            if (allPermissionGranted()) {
+                screenSetting()
+                detectAndPlayStart()
+            } else {
+                Toast.makeText(
+                    this,
+                    "One of the permissions (Camera, File access) was denied.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
 
@@ -144,9 +178,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         videoView = binding.videoView
         webView = binding.webView
 
-        //askCameraPermission()
         askAllPermissions()
-
         buttonClick()
         settingsPage()
         repeatVideoFile()
@@ -155,53 +187,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         binding.buttonControl.isVisible = true
         return super.dispatchTouchEvent(ev)
-    }
-
-    private fun allPermissionGranted(): Boolean {
-        if (Build.VERSION.SDK_INT >= 33) {
-            return REQUIRED_PERMISSIONS_33.all {
-                ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-            }
-        } else {
-            return REQUIRED_PERMISSIONS_29.all {
-                ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-            }
-        }
-    }
-
-    private fun askAllPermissions() {
-        if (allPermissionGranted()) {
-            screenSetting()
-            detectAndPlayStart()
-        } else {
-            val permissionsToRequest = if (Build.VERSION.SDK_INT >= 33) {
-                REQUIRED_PERMISSIONS_33
-            } else {
-                REQUIRED_PERMISSIONS_29
-            }
-            ActivityCompat.requestPermissions(this, permissionsToRequest, 0)
-        }
-    }
-
-
-    // permission for array of required functions (CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE etc)
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 0) {
-            if (allPermissionGranted()) {
-                screenSetting()
-                detectAndPlayStart()
-        } else {
-            Toast.makeText(
-                this,
-                "One of Permissions (Camera, File access) was denied.",
-                Toast.LENGTH_SHORT).show()
-                }
-        }
     }
 
     private fun buttonClick() {
@@ -316,7 +301,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             }
 
             "3" -> { // video play: YouTube
-                playVideoUrl()
+                playVideoFromPreferences()
                 bg_cameraManager.cameraStart(cameraSide)
             }
 
@@ -414,66 +399,54 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private fun stopVideoFile() {
 
-        // video download upon stop action
-        /*
-        val downloadButton = findViewById<Button>(R.id.downloadbtn)
-        val downloader = AndroidDownloader(this)
-        downloadButton.setOnClickListener {
-            downloader.downloadFile(emarthUrl)
-            Toast.makeText(this, "Download Started", Toast.LENGTH_LONG).show()
-        }
-        */
-
         if (videoView.isPlaying) {
             videoView.pause()
             //downloadButton.visibility = View.VISIBLE
         }
     }
 
-    private fun playVideoUrl() {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val defaultURL = "https://www.youtube.com/watch?v=yt7OM515Y58"
-        //val defaultURL = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/2MSyHu9bMPo?si=Y5midxW256Ybn7Qg\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay=\"1\"; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>"
+    private fun playVideoUrl(iframeUrl: String) {
+        // Create an HTML string to load in the WebView
+        val html = """
+        <html>
+            <body style="margin:0;padding:0;">
+                <iframe width="100%" height="100%" 
+                        src="$iframeUrl?autoplay=1&mute=0" 
+                        frameborder="0" allowfullscreen>
+                </iframe>
+            </body>
+        </html>
+    """.trimIndent()
 
-        var videoURL = sharedPref?.getString("videoPreference2", defaultURL) ?: defaultURL
-
-        if (videoURL == "") {
-            videoURL = defaultURL
-            //Log.i("TAGY", "${videoURL}")
-        }
-
-        /* to enable YouTube functions
         webView.apply {
             settings.javaScriptEnabled = true
-            webChromeClient = WebChromeClient()
-            settings.cacheMode = WebSettings.LOAD_NO_CACHE
-            settings.loadsImagesAutomatically = true
-            settings.allowFileAccess = true
-            settings.javaScriptCanOpenWindowsAutomatically = true
             settings.mediaPlaybackRequiresUserGesture = false
-            settings.domStorageEnabled = true
-        }.loadData(videoURL,"text/html","utf-8")
-        */
-
-        webView.apply {
-            settings.javaScriptEnabled = true
             webViewClient = WebViewClient()
             settings.cacheMode = WebSettings.LOAD_NO_CACHE
+            loadData(html, "text/html", "UTF-8")
         }
 
-        webView.loadUrl(videoURL)
         webView.onResume()
     }
 
-    override fun onResume() {
-        super.onResume()
-        webView.onResume()
+    private fun playVideoFromPreferences() {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val defaultVideoId = "Qghjl2tJsoo" // Default video ID
+        val defaultIframeUrl = "https://www.youtube.com/embed/$defaultVideoId"
+
+        val videoId = sharedPref.getString("videoPreference2", defaultVideoId) ?: defaultVideoId
+
+        val iframeUrl = if (videoId != null) {
+            "https://www.youtube.com/embed/$videoId"
+        } else {
+            defaultIframeUrl
+        }
+
+        playVideoUrl(iframeUrl)
+
     }
 
-    override fun onPause() {
-        super.onPause()
-        webView.onPause()
-    }
+
 
     override fun onProgressUpdate(percentage: Int) {
         //do nothing
