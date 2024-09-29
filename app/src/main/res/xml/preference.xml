@@ -35,7 +35,7 @@
             app:title="@string/videoPrefTitle1"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-            android:defaultValue="https://www.youtube.com/watch?v=8RdhjRa5HRQ"
+            android:defaultValue="https://www.youtube.com/watch?v=COrAcPrR8yo"
             app:key="videoPreference2"
             app:title="@string/videoPrefTitle2"
             app:useSimpleSummaryProvider="true" />

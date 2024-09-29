@@ -405,6 +405,34 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
+    private fun playVideoFromPreferences() {
+
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val defaultIframeUrl = "https://www.youtube.com/embed/Qghjl2tJsoo"
+
+        val videoUrl = sharedPref.getString("videoPreference2", null)
+
+        val iframeUrl = when {
+            !videoUrl.isNullOrEmpty() -> convertToEmbedUrl(videoUrl) ?: defaultIframeUrl
+            videoUrl == null -> defaultIframeUrl
+            else -> defaultIframeUrl
+        }
+
+        Log.d("VideoPlayback", "iframeUrl: $iframeUrl")
+        playVideoUrl(iframeUrl)
+    }
+
+    private fun convertToEmbedUrl(youtubeUrl: String): String? {
+        val videoId = extractVideoId(youtubeUrl) ?: return null
+        return "https://www.youtube.com/embed/$videoId"
+    }
+
+    private fun extractVideoId(youtubeUrl: String): String? {
+        val regex = """(?:https?://)?(?:www\.)?(?:youtube\.com/(?:[^/]+/.*|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^?&]{11})""".toRegex()
+        val matchResult = regex.find(youtubeUrl)
+        return matchResult?.groups?.get(1)?.value
+    }
+
     private fun playVideoUrl(iframeUrl: String) {
         // Create an HTML string to load in the WebView
         val html = """
@@ -428,25 +456,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
         webView.onResume()
     }
-
-    private fun playVideoFromPreferences() {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val defaultVideoId = "Qghjl2tJsoo" // Default video ID
-        val defaultIframeUrl = "https://www.youtube.com/embed/$defaultVideoId"
-
-        val videoId = sharedPref.getString("videoPreference2", defaultVideoId) ?: defaultVideoId
-
-        val iframeUrl = if (videoId != null) {
-            "https://www.youtube.com/embed/$videoId"
-        } else {
-            defaultIframeUrl
-        }
-
-        playVideoUrl(iframeUrl)
-
-    }
-
-
 
     override fun onProgressUpdate(percentage: Int) {
         //do nothing
