@@ -53,7 +53,7 @@ class SignupActivity : AppCompatActivity() {
 
         // Sanitize firmName
         return "${firmName.replace("\\s+".toRegex(), "_") // Replace spaces with underscores
-            .replace("[^a-zA-Z0-9_]".toRegex(), "") // Remove special characters
+            //.replace("[^a-zA-Z0-9_]".toRegex(), "") // Remove special characters
             .lowercase()}_$currentDate" // Append the current date
     }
 
