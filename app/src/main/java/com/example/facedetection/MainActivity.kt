@@ -363,7 +363,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val defaultFile = downloadedfilename
 
         val directory = File(videoLoc)
-        //Log.i("TAGY", "${directory}")
+        //Toa
 
         var filecnt = 0
         val files = directory.listFiles()?.filter { it.isFile }

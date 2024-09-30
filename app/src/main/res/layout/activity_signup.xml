@@ -69,25 +69,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:hint="Your Name" />
+                android:hint="名前" />
 
             <EditText
                 android:id="@+id/editTextFirmName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pharmacy Name" />
+                android:hint="薬局名" />
 
             <EditText
                 android:id="@+id/editTextPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Phone Number" />
+                android:hint="電話番号" />
 
             <EditText
                 android:id="@+id/editTextOfficeAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pharmacy Address" />
+                android:hint="薬局住所" />
 
             <Button
                 android:id="@+id/buttonSignupUser"

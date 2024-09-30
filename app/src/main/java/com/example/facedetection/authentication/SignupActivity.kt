@@ -36,7 +36,10 @@ class SignupActivity : AppCompatActivity() {
             val firmName = signupBinding.editTextFirmName.text.toString() // Assuming you have an EditText for firm name
             val officeAddress = signupBinding.editTextOfficeAddress.text.toString() // Assuming you have an EditText for office address
 
-            signupWithFirebase(userEmail, userPassword, userName, phoneNumber, firmName, officeAddress)
+            // Validate inputs
+            if (validateInputs(userEmail, userPassword, userName, phoneNumber, firmName, officeAddress)) {
+                signupWithFirebase(userEmail, userPassword, userName, phoneNumber, firmName, officeAddress)
+            }
         }
 
     }
@@ -95,4 +98,62 @@ class SignupActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun validateInputs(userEmail: String, userPassword: String, userName: String, phoneNumber: String, firmName: String, officeAddress: String): Boolean {
+        return when {
+            userEmail.isEmpty() -> {
+                Toast.makeText(
+                    this,
+                    "Email is required",
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+
+            }
+            userPassword.isEmpty() -> {
+                Toast.makeText(
+                    this,
+                    "Password is required",
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+            userName.isEmpty() -> {
+                Toast.makeText(
+                    this,
+                    "Name is required",
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+            phoneNumber.isEmpty() -> {
+                Toast.makeText(
+                    this,
+                    "Phone number is required",
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+            firmName.isEmpty() -> {
+                Toast.makeText(
+                    this,
+                    "Company name is required",
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+            officeAddress.isEmpty() -> {
+                Toast.makeText(
+                    this,
+                    "Company address is required",
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+            else -> true
+        }
+    }
+
+
+
 }
