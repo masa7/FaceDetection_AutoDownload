@@ -26,6 +26,13 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+            <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_launcher_full_foreground"
+                android:layout_gravity="center"/>
+
             <TextView
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
@@ -40,7 +47,7 @@
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/custom_edittext"
                 android:drawableStart="@drawable/icon_email"
                 android:drawablePadding="8dp"

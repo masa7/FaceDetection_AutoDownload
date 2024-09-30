@@ -72,10 +72,10 @@ class SignupActivity : AppCompatActivity() {
 
                 // Create a HashMap to store user details
                 val userMap = hashMapOf(
-                    "userName" to userName,
                     "userEmail" to userEmail,
-                    "phoneNumber" to phoneNumber,
+                    "userName" to userName,
                     "firmName" to firmName,
+                    "phoneNumber" to phoneNumber,
                     "officeAddress" to officeAddress
                 )
 
@@ -102,52 +102,27 @@ class SignupActivity : AppCompatActivity() {
     private fun validateInputs(userEmail: String, userPassword: String, userName: String, phoneNumber: String, firmName: String, officeAddress: String): Boolean {
         return when {
             userEmail.isEmpty() -> {
-                Toast.makeText(
-                    this,
-                    "Email is required",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Email is required", Toast.LENGTH_SHORT).show()
                 false
-
             }
             userPassword.isEmpty() -> {
-                Toast.makeText(
-                    this,
-                    "Password is required",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Password is required", Toast.LENGTH_SHORT).show()
                 false
             }
             userName.isEmpty() -> {
-                Toast.makeText(
-                    this,
-                    "Name is required",
-                    Toast.LENGTH_SHORT
-                ).show()
-                false
-            }
-            phoneNumber.isEmpty() -> {
-                Toast.makeText(
-                    this,
-                    "Phone number is required",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show()
                 false
             }
             firmName.isEmpty() -> {
-                Toast.makeText(
-                    this,
-                    "Company name is required",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Company name is required", Toast.LENGTH_SHORT).show()
+                false
+            }
+            phoneNumber.isEmpty() -> {
+                Toast.makeText(this, "Phone number is required", Toast.LENGTH_SHORT).show()
                 false
             }
             officeAddress.isEmpty() -> {
-                Toast.makeText(
-                    this,
-                    "Company address is required",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Company address is required", Toast.LENGTH_SHORT).show()
                 false
             }
             else -> true
