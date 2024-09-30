@@ -2,8 +2,6 @@ package com.example.facedetection
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil.setContentView
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.storageType
