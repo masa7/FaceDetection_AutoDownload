@@ -1,18 +1,21 @@
 package com.example.facedetection.authentication
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.facedetection.R
 import com.example.facedetection.databinding.ActivitySignupBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupActivity : AppCompatActivity() {
+
 
     lateinit var signupBinding: ActivitySignupBinding
 
     val auth : FirebaseAuth = FirebaseAuth.getInstance()
+    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,46 +29,49 @@ class SignupActivity : AppCompatActivity() {
         signupBinding.buttonSignupUser.setOnClickListener {
             val userEmail = signupBinding.editTextEmailSignup.text.toString()
             val userPassword = signupBinding.editTextPasswordSignup.text.toString()
-            val userName = signupBinding.editTextName.text.toString()
-            val firmName = signupBinding.editTextFirmName.text.toString()
-            val phoneNumber = signupBinding.editTextPhoneNumber.text.toString()
-            val officeAddress = signupBinding.editTextOfficeAddress.text.toString()
+            val userName = signupBinding.editTextName.text.toString() // Assuming you have an EditText for name
+            val phoneNumber = signupBinding.editTextPhoneNumber.text.toString() // Assuming you have an EditText for phone number
+            val firmName = signupBinding.editTextFirmName.text.toString() // Assuming you have an EditText for firm name
+            val officeAddress = signupBinding.editTextOfficeAddress.text.toString() // Assuming you have an EditText for office address
 
-            signupWithFirebase(userEmail, userPassword, userName, firmName, phoneNumber, officeAddress)
+            signupWithFirebase(userEmail, userPassword, userName, phoneNumber, firmName, officeAddress)
         }
 
     }
 
-    fun signupWithFirebase(userEmail: String, userPassword: String, userName: String, firmName: String, phoneNumber: String, officeAddress: String) {
-
+    fun signupWithFirebase(userEmail: String, userPassword: String, userName: String, phoneNumber: String, firmName: String, officeAddress: String) {
         auth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Get the current user
+                val userId = auth.currentUser?.uid
+                Log.i("TAGY", "${userId}")
 
-            if (task.isSuccessful){
+                // Create a HashMap to store user details
+                val userMap = hashMapOf(
+                    "userName" to userName,
+                    "userEmail" to userEmail,
+                    "phoneNumber" to phoneNumber,
+                    "firmName" to firmName,
+                    "officeAddress" to officeAddress
+                )
 
-                val userInfo = "Name: $userName\nFirm Name: $firmName\nEmail: $userEmail\nPhone Number: $phoneNumber\nOffice Address: $officeAddress"
-                sendEmailWithUserInfo(userInfo)
+                // Save the user details in Firestore
+                userId?.let {
+                    firestore.collection("Registration")
+                        .document(userId) // Use the user ID as the document ID
+                        .set(userMap)
+                        .addOnSuccessListener {
+                            Toast.makeText(applicationContext, "Account has been created and data saved", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(applicationContext, "Error saving user data: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
 
-                Toast.makeText(applicationContext,"Account has been created",Toast.LENGTH_SHORT).show()
-                finish()
-
-            }else{
-                Toast.makeText(applicationContext,task.exception?.toString(),Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(applicationContext, task.exception?.toString(), Toast.LENGTH_SHORT).show()
             }
         }
     }
-
-    private fun sendEmailWithUserInfo(userInfo: String) {
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "text/plain"
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("kuraken.tok@gmail.com"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "New User Registration")
-        intent.putExtra(Intent.EXTRA_TEXT, userInfo)
-
-        try {
-            startActivity(Intent.createChooser(intent, "Send Email"))
-        } catch (e: android.content.ActivityNotFoundException) {
-            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 }

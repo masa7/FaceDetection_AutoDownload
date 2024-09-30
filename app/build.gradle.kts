@@ -54,6 +54,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation(libs.play.services.vision.common)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.database.ktx)
     //implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
     //implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
@@ -82,17 +83,17 @@ dependencies {
 
     // Firebase BOM and Firestore
     // Import the Firebase BoM
-    //implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
 
     // When using the BoM, don't specify versions in Firebase dependencies
-    //implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-analytics")
 
     // Add the dependency for the Realtime Database library
-    //implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-database")
 
     // Declare the dependency for the Cloud Firestore library
-    //implementation("com.google.firebase:firebase-firestore")
-    //implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Add for Preference Fragment
     var preference_version = "1.2.1"
@@ -129,5 +130,6 @@ dependencies {
     // Google Play Service library
     //implementation("com.google.firebase:firebase-auth-ktx:21.0.3")
     implementation("com.google.android.gms:play-services-auth:20.1.0")
+
 
 }
