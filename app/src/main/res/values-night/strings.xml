@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"><font size="15">EM@rth</font></string>
+    <string name="app_name"><font size="15">EMARTH</font></string>
     <string name="turn_camera">Turn Camera</string>
     <string name="stop_camera">Stop Camera</string>
     <string name="start_camera">Start Camera</string>
@@ -10,6 +10,24 @@
     <string name="rb_background">バックグラウンド</string>
     <string name="rb_foreground">顔検知テスト</string>
     <string name="settings_title">設定</string>
+
+    <string name="title_string"><font size="15">EM APPLIED RESEARCH &amp; TECHNOLOGY HUB</font></string>
+    <string name="TAC">I agree to the Terms and Conditions</string>
+    <string name="legal">I agree to the Terms and Conditions</string>
+    <string name="password_reset"><u>Password Reset</u></string>
+    <string name="SIGN_UP">Enter your email to sign up</string>
+    <string name="SIGN_UP_FRONT">SIGN UP</string>
+    <string name="Create_Account">Create account</string>
+    <string name="Login">Login</string>
+    <string name="Password">Password</string>
+    <string name="RESET_MY_PASSWORD">RESET MY PASSWORD</string>
+    <string name="Enter_email">email@domain.com</string>
+    <string name="Enter_email_address">Enter email address</string>
+    <string name="powered_by">powered by Em@rth</string>
+    <string name="Current_Location">Current GPS Location</string>
+    <string name="Get_location">Get Location</string>
+    <string name="Upload">Upload</string>
+    <string name="File_Upload">Tap to Select File &amp; Press Upload</string>
 
     <string name="dlPrefTitle">動画ダウンロード実行日</string>
     <string name="videoCatTitle">動画設定</string>

@@ -108,14 +108,14 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (!termsCheckBox.isChecked) {
-                Toast.makeText(
-                    applicationContext,
-                    "You must agree to the Terms and Conditions.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
+//            if (!termsCheckBox.isChecked) {
+//                Toast.makeText(
+//                    applicationContext,
+//                    "You must agree to the Terms and Conditions.",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                return@setOnClickListener
+//            }
 
             signinWithFirebase(userEmail, userPassword)
 
