@@ -438,8 +438,8 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val html = """
         <html>
             <body style="margin:0;padding:0;">
-                <iframe width="100%" height="100%" 
-                        src="$iframeUrl?autoplay=1&mute=0" 
+                <iframe width="100%" height="100%"
+                        src="$iframeUrl?autoplay=1&mute=0"
                         frameborder="0" allowfullscreen>
                 </iframe>
             </body>

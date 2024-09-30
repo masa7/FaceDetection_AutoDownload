@@ -11,7 +11,7 @@
     <string name="rb_foreground">顔検知テスト</string>
     <string name="settings_title">設定</string>
 
-    <string name="login_page">Your Ad: Where It Belongs</string>
+    <string name="title_string"><font size="15">EM APPLIED RESEARCH &amp; TECHNOLOGY HUB</font></string>
     <string name="TAC">I agree to the Terms and Conditions</string>
     <string name="legal">I agree to the Terms and Conditions</string>
     <string name="password_reset"><u>Password Reset</u></string>
