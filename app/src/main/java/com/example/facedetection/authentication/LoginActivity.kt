@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
             setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     widget.cancelPendingInputEvents()
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://emadtech.jp/legal/"))
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://emarth.jp/legal/"))
                     widget.context.startActivity(intent)
                 }
 
@@ -107,15 +107,6 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext,"Please enter your password.",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-//            if (!termsCheckBox.isChecked) {
-//                Toast.makeText(
-//                    applicationContext,
-//                    "You must agree to the Terms and Conditions.",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//                return@setOnClickListener
-//            }
 
             signinWithFirebase(userEmail, userPassword)
 
@@ -193,8 +184,9 @@ class LoginActivity : AppCompatActivity() {
     // google sign-in
     private fun signInGoogle(){
 
+        val serverClientId = this.getString(R.string.serverClientId)
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("281673539231-pfthpnmvu755bbk3mthb31kqtcbqdvqd.apps.googleusercontent.com")
+            .requestIdToken(serverClientId)
             .requestEmail().build()
 
         googleSignInClient = GoogleSignIn.getClient(this,gso)
