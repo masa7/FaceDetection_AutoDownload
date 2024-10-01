@@ -69,16 +69,9 @@ class LoginActivity : AppCompatActivity() {
         terms.text = spannableString
         terms.movementMethod = LinkMovementMethod.getInstance()
 
-        /*
-        val tv = loginBinding.loginText
-        val face: Typeface = Typeface.createFromAsset(
-            assets,
-            "Sacramento-Regular.ttf"
-        )
-        tv.setTypeface(face)
-        */
 
-        // google login
+
+        // google login title
         val textOfGoogleButton = loginBinding.buttonGoogleSignin.getChildAt(0) as TextView
         textOfGoogleButton.text = "Continue with Google"
         textOfGoogleButton.setTextColor(Color.BLACK)
@@ -200,8 +193,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun registerActivityForGoogleSignIn(){
 
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(),
-            ActivityResultCallback { result ->
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        { result ->
 
                 val resultCode = result.resultCode
                 val data = result.data
@@ -210,8 +203,7 @@ class LoginActivity : AppCompatActivity() {
                     val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
                     firebaseSignInWithGoogle(task)
                 }
-            }
-        )
+        }
     }
 
     private fun firebaseSignInWithGoogle(task : Task<GoogleSignInAccount>){
