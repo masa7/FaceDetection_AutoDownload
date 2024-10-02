@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Theme.FaceDetection"
@@ -11,115 +11,121 @@
     android:background="@color/gofuniro"
     tools:context=".authentication.SignupActivity">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="20dp">
-
-        <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/custom_edittext"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:layout_margin="30dp"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="20dp">
 
-<!--            <ImageView-->
-<!--                android:id="@+id/logoImageView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@mipmap/ic_launcher_full_foreground"-->
-<!--                android:layout_gravity="center"/>-->
-
-            <TextView
-                android:id="@+id/loginText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/SIGN_UP"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/editTextEmailSignup"
-                android:inputType="textEmailAddress"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
                 android:background="@drawable/custom_edittext"
-                android:drawableStart="@drawable/icon_email"
-                android:drawablePadding="8dp"
-                android:hint="@string/Enter_email"
-                android:padding="8dp"
-                android:textColor="@color/black"
-                android:importantForAutofill="no"/>
+                android:orientation="vertical"
+                android:padding="24dp">
 
-            <EditText
-                android:id="@+id/editTextPasswordSignup"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/custom_edittext"
-                android:drawableStart="@drawable/icon_lock"
-                android:drawablePadding="8dp"
-                android:hint="@string/Password"
-                android:inputType="textPassword"
-                android:padding="8dp"
-                android:textColor="@color/black"
-                android:importantForAutofill="no"/>
+    <!--            <ImageView-->
+    <!--                android:id="@+id/logoImageView"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:src="@mipmap/ic_launcher_full_foreground"-->
+    <!--                android:layout_gravity="center"/>-->
 
-            <EditText
-                android:id="@+id/editTextPasswordConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/custom_edittext"
-                android:drawableStart="@drawable/icon_lock"
-                android:drawablePadding="8dp"
-                android:hint="@string/ConfirmPassword"
-                android:inputType="textPassword"
-                android:padding="8dp"
-                android:textColor="@color/black"
-                android:importantForAutofill="no"/>
+                <TextView
+                    android:id="@+id/loginText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/SIGN_UP"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-            <!-- for registration -->
-            <EditText
-                android:id="@+id/editTextName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:hint="名前" />
+                <EditText
+                    android:id="@+id/editTextEmailSignup"
+                    android:inputType="textEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/icon_email"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/Enter_email"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:importantForAutofill="no"/>
 
-            <EditText
-                android:id="@+id/editTextFirmName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="薬局名" />
+                <EditText
+                    android:id="@+id/editTextPasswordSignup"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/icon_lock"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/Password"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:importantForAutofill="no"/>
 
-            <EditText
-                android:id="@+id/editTextPhoneNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="電話番号" />
+                <EditText
+                    android:id="@+id/editTextPasswordConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/custom_edittext"
+                    android:drawableStart="@drawable/icon_lock"
+                    android:drawablePadding="8dp"
+                    android:hint="@string/ConfirmPassword"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:importantForAutofill="no"/>
 
-            <EditText
-                android:id="@+id/editTextOfficeAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="薬局住所" />
+                <!-- for registration -->
+                <EditText
+                    android:id="@+id/editTextName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:hint="名前" />
 
-            <Button
-                android:id="@+id/buttonSignupUser"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="30dp"
-                android:backgroundTint="@color/purple"
-                android:text="@string/Create_Account"
-                android:textSize="16sp"
-                app:cornerRadius="20dp" />
+                <EditText
+                    android:id="@+id/editTextFirmName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="薬局名" />
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+                <EditText
+                    android:id="@+id/editTextPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="電話番号" />
+
+                <EditText
+                    android:id="@+id/editTextOfficeAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="薬局住所" />
+
+                <Button
+                    android:id="@+id/buttonSignupUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="30dp"
+                    android:backgroundTint="@color/purple"
+                    android:text="@string/Create_Account"
+                    android:textSize="16sp"
+                    app:cornerRadius="20dp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>
