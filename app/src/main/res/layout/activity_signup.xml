@@ -26,12 +26,12 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <ImageView
-                android:id="@+id/logoImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher_full_foreground"
-                android:layout_gravity="center"/>
+<!--            <ImageView-->
+<!--                android:id="@+id/logoImageView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:src="@mipmap/ic_launcher_full_foreground"-->
+<!--                android:layout_gravity="center"/>-->
 
             <TextView
                 android:id="@+id/loginText"
@@ -65,6 +65,20 @@
                 android:drawableStart="@drawable/icon_lock"
                 android:drawablePadding="8dp"
                 android:hint="@string/Password"
+                android:inputType="textPassword"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:importantForAutofill="no"/>
+
+            <EditText
+                android:id="@+id/editTextPasswordConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/custom_edittext"
+                android:drawableStart="@drawable/icon_lock"
+                android:drawablePadding="8dp"
+                android:hint="@string/ConfirmPassword"
                 android:inputType="textPassword"
                 android:padding="8dp"
                 android:textColor="@color/black"

@@ -63,24 +63,29 @@ class SettingsFragment: PreferenceFragmentCompat(){
         this.findPreference<Preference>("logout")?.setOnPreferenceClickListener {
             FirebaseAuth.getInstance().signOut()
 
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build()
-            val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
-
-            googleSignInClient.signOut().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
-
-                    val intent = Intent(context, LoginActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(context, "Logout failed. Please try again.", Toast.LENGTH_SHORT).show()
-                }
-            }
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            activity?.startActivity(intent)
             true
         }
+//            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail()
+//                .build()
+//            val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
+//
+//            googleSignInClient.signOut().addOnCompleteListener { task ->
+//                if (task.isSuccessful) {
+//                    Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
+//
+//                    val intent = Intent(context, LoginActivity::class.java)
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                    startActivity(intent)
+//                } else {
+//                    Toast.makeText(context, "Logout failed. Please try again.", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            true
+//        }
 
     }
 }

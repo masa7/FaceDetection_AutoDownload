@@ -88,7 +88,8 @@
                 <CheckBox
                     android:id="@+id/termsCheckBox"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/legal"/>
 
                 <Button
                     android:id="@+id/buttonForgot"
@@ -108,34 +109,34 @@
                     android:orientation="horizontal"
                     android:gravity="center">
 
-                    <View
-                        android:layout_width="wrap_content"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"
-                        android:background="@color/black"/>
+<!--                    <View-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@color/black"/>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OR"
-                        android:textColor="@color/black"
-                        android:textSize="10sp"
-                        android:layout_margin="3dp"/>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="OR"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="10sp"-->
+<!--                        android:layout_margin="3dp"/>-->
 
-                    <View
-                        android:layout_width="wrap_content"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"
-                        android:background="@color/black" />
+<!--                    <View-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@color/black" />-->
 
                 </LinearLayout>
 
-                <com.google.android.gms.common.SignInButton
-                    android:id="@+id/buttonGoogleSignin"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="center"/>
+<!--                <com.google.android.gms.common.SignInButton-->
+<!--                    android:id="@+id/buttonGoogleSignin"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_gravity="center"/>-->
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
