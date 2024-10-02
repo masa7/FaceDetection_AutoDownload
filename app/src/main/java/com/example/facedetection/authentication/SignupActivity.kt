@@ -102,7 +102,10 @@ class SignupActivity : AppCompatActivity() {
                 }
 
             } else {
-                Toast.makeText(applicationContext, task.exception?.toString(), Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, task.exception?.toString(), Toast.LENGTH_SHORT).show()
+                val exceptionMessage = task.exception?.toString()
+                val cleanMessage = exceptionMessage?.replace("com.google.firebase.auth.FirebaseAuthUserCollisionException:", "") // You can adjust the string as needed
+                Toast.makeText(applicationContext, cleanMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
