@@ -25,13 +25,17 @@ import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.abbrDataLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
+import com.example.facedetection.MainActivity.Global.Companion.appLog
 import com.example.facedetection.MainActivity.Global.Companion.dateFormatter
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.debugFlag
+import com.example.facedetection.MainActivity.Global.Companion.dlDir
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
+import com.example.facedetection.MainActivity.Global.Companion.emarthYT
 import com.example.facedetection.MainActivity.Global.Companion.holdDays
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.MainActivity.Global.Companion.userEmail
+import com.example.facedetection.MainActivity.Global.Companion.videoDynamicUrl
 import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
@@ -57,6 +61,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import com.example.facedetection.SettingsFragment
+import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
+import com.example.facedetection.videodownload.AndroidDownloader
 
 
 class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
@@ -68,7 +75,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private lateinit var webView: WebView
     private var file: FileUtils
     private var selectedFileUri: Uri? = null
-
 
     private val REQUIRED_PERMISSIONS = mutableListOf<String>().apply {
         add(android.Manifest.permission.CAMERA)
@@ -137,19 +143,24 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             val auth: FirebaseAuth = FirebaseAuth.getInstance()
             val userEmail = auth.currentUser?.email
 
-            var emarthUrl: String =
-                "https://emadtech.jp/wp-content/uploads/2019/06/test_default.mp4"
-            // set EMarth download URL to above currentUrl global variable
-
             // 1: Internal Storage, 2: External Storage(Download folder)
             val storageType: String = "1"
             val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
             val dateStr = LocalDateTime.now().format(dateFormatter)
             val abbrFaceDetectionLog = "Log_"
             val abbrTransferredFile = "Done_"
-            val abbrDataLog = "DataLog"
+            val abbrDataLog = "AppLog"
             val holdDays = 5
             val debugFlag = false
+
+            // set EMarth download URL to below global variable
+            val appLog = FileUtils(abbrDataLog + ".txt", "2")
+
+            val dlDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
+            val videoDynamicUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/test_vd_" + dateStr + ".mp4"
+            val videoStaticUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/test_vs.mp4"
+            val emarthUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/Influenza_v2.mp4"
+            val emarthYT: String = "https://www.youtube.com/embed/Qghjl2tJsoo"
         }
     }
 
@@ -316,6 +327,15 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             }
         }
 
+        // delete video (1:Dynamic, 2:Static)
+        deleteVideo(1)
+        deleteVideo(2)
+
+        // auto video download (Dynamic)
+        val appContext = applicationContext()
+        val downloader = AndroidDownloader(appContext)
+        downloader.execDownload(videoDynamicUrl)
+
         binding.buttonStopCamera.isVisible = true
         binding.buttonStartCamera.isVisible = false
     }
@@ -355,61 +375,57 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private fun playVideoFile() {
 
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        var videoFile = sharedPref?.getString("videoPreference1", "")
+        val videoDynamicFile = sharedPref?.getString("videoDynamicFilePref", "")
+        val videoStaticFile = sharedPref?.getString("videoStaticFilePref", "")
+        val videoDlFile = sharedPref?.getString("dlFilePref", "")
+        //var videoFile = sharedPref?.getString("videoPreference1", "")
+        var playVideoFile = videoDynamicFile
 
-        val videoLoc =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + "/"
-        val downloadedfilename: String = emarthUrl.substring(emarthUrl.lastIndexOf('/') + 1)
-        val defaultFile = downloadedfilename
+        val directory = File(dlDir)
 
-        val directory = File(videoLoc)
-        //Toa
-
-        var filecnt = 0
         val files = directory.listFiles()?.filter { it.isFile }
+
+        var dynamicFileCnt = 0
         files?.forEach { file ->
-            println(file.name)
-            if (videoFile == file.name) {
-                ++filecnt
+            if (videoDynamicFile == file.name) {
+                ++dynamicFileCnt
             }
         }
 
-        if (filecnt != 0) {
+        var staticFileCnt = 0
+        files?.forEach { file ->
+            if (videoStaticFile == file.name) {
+                ++staticFileCnt
+            }
+        }
+
+        if (dynamicFileCnt != 0) {
+            playVideoFile = videoDynamicFile
             if(debugFlag) {
-                Toast.makeText(
-                    this,
-                    "Playing " + videoFile,
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Playing " + playVideoFile, Toast.LENGTH_SHORT).show()
+            }
+        } else if(staticFileCnt != 0){
+            playVideoFile = videoStaticFile
+            if(debugFlag){
+                Toast.makeText(this,"Playing " + playVideoFile, Toast.LENGTH_SHORT).show()
             }
         } else {
-            videoFile = defaultFile
-            if(debugFlag){
-                Toast.makeText(
-                    this,
-                    "File does not exist. Using " + defaultFile,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            Toast.makeText(this, getString(R.string.video_dl_msg), Toast.LENGTH_LONG).show()
         }
 
-        videoView.setVideoPath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + "/" + videoFile)
+        videoView.setVideoPath(dlDir + "/" + playVideoFile)
         videoView.start()
     }
 
     private fun stopVideoFile() {
-
         if (videoView.isPlaying) {
             videoView.pause()
-            //downloadButton.visibility = View.VISIBLE
         }
     }
 
     private fun playVideoFromPreferences() {
-
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val defaultIframeUrl = "https://www.youtube.com/embed/Qghjl2tJsoo"
-
+        val defaultIframeUrl = emarthYT
         val videoUrl = sharedPref.getString("videoPreference2", null)
 
         val iframeUrl = when {
@@ -462,38 +478,42 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         //binding.progressBar.progress = percentage
     }
 
-    private fun clearCache(){
-        val transferLog = FileUtils(abbrDataLog + ".txt", "2")
-        val ctx = SingletonContext.applicationContext()
+    private fun deleteVideo(videoType: Int){
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val videoDynamicAsof = sharedPref?.getString("videoDynamicPreference", "")
+        val videoStaticAsof = sharedPref?.getString("videoStaticPreference", "")
+        var videoAbbr = "test_v"
+        var baseAsof = videoDynamicAsof
 
-        val cacheLoc = ctx.cacheDir
-        val logList = cacheLoc.list()?.filter{ it.startsWith(abbrFaceDetectionLog) }
-        val doneList = cacheLoc.list()?.filter{ it.startsWith(abbrTransferredFile) }
-
-        // delete face detection log file in cache
-        logList?.forEach {
-            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
-            val deleteFilePath = File(cacheLoc, it)
-            val result = deleteFilePath.delete()
-            if(result){
-                transferLog.save(dateAndTime + ", ")
-                transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
-            }
+        if(videoType == 1){
+            videoAbbr = videoAbbr + "d_"
+            baseAsof = videoDynamicAsof
+        }else if(videoType == 2){
+            videoAbbr = videoAbbr + "s_"
+            baseAsof = videoStaticAsof
         }
-        // delete transferred file in cache
-        doneList?.forEach {
-            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
-            val deleteFilePath = File(cacheLoc, it)
-            val result = deleteFilePath.delete()
-            if(result){
-                transferLog.save(dateAndTime + ", ")
-                transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
+        val videoList = File(dlDir).list()?.filter{ it.startsWith(videoAbbr) }
+
+        videoList?.forEach {
+            val yyyymmdd = it.substring(videoAbbr.length, videoAbbr.length + 8)
+            val elapsedDays = ChronoUnit.DAYS.between(LocalDate.parse(yyyymmdd, dateFormatter), LocalDate.parse(baseAsof, DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+
+            if(elapsedDays > 0){
+                val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                val deleteFilePath = File(dlDir, it)
+                val result = deleteFilePath.delete()
+                if(result){
+                    appLog.save(dateAndTime + ", ")
+                    appLog.save("video was deleted: " + deleteFilePath.toString() + "\n")
+                }
+                if(debugFlag) {
+                    Toast.makeText(this,"ダウンロード・フォルダのクリーンアップが完了しました", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
     private fun deleteFile(){
-        val transferLog = FileUtils(abbrDataLog + ".txt", "2")
         val ctx = SingletonContext.applicationContext()
         val fileLoc = ctx.filesDir
         val fileList = fileLoc.list()?.filter{ it.startsWith(abbrTransferredFile) }
@@ -508,13 +528,13 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 val deleteFilePath = File(fileLoc, it)
                 val result = deleteFilePath.delete()
                 if(result){
-                    transferLog.save(dateAndTime + ", ")
-                    transferLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
+                    appLog.save(dateAndTime + ", ")
+                    appLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
                 }
                 if(debugFlag) {
                     Toast.makeText(
                         this,
-                        "データ・クリーンアップが完了しました",
+                        "データ・フォルダのクリーンアップが完了しました",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -522,8 +542,36 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
+    private fun clearCache(){
+        val ctx = SingletonContext.applicationContext()
+
+        val cacheLoc = ctx.cacheDir
+        val logList = cacheLoc.list()?.filter{ it.startsWith(abbrFaceDetectionLog) }
+        val doneList = cacheLoc.list()?.filter{ it.startsWith(abbrTransferredFile) }
+
+        // delete face detection log file in cache
+        logList?.forEach {
+            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+            val deleteFilePath = File(cacheLoc, it)
+            val result = deleteFilePath.delete()
+            if(result){
+                appLog.save(dateAndTime + ", ")
+                appLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
+            }
+        }
+        // delete transferred file in cache
+        doneList?.forEach {
+            val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+            val deleteFilePath = File(cacheLoc, it)
+            val result = deleteFilePath.delete()
+            if(result){
+                appLog.save(dateAndTime + ", ")
+                appLog.save("file was deleted: " + deleteFilePath.toString() + "\n")
+            }
+        }
+    }
+
     private fun transferFile() {
-        val transferLog = FileUtils(abbrDataLog + ".txt", "2")
         val ctx = SingletonContext.applicationContext()
         val fileLoc = ctx.filesDir
         val fileList = fileLoc.list()?.filter { it.startsWith(abbrFaceDetectionLog) }
@@ -564,8 +612,8 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                         //binding.layoutRoot.snackbar(t.message!!)
                         //binding.progressBar.progress = 0
                         val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
-                        transferLog.save(dateAndTime + ", ")
-                        transferLog.save("transfer file=" + file.toString() + ": NG\n")
+                        appLog.save(dateAndTime + ", ")
+                        appLog.save("transfer file=" + file.toString() + ": NG\n")
                     }
 
                     override fun onResponse(
@@ -576,11 +624,11 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                             //binding.layoutRoot.snackbar(it.message)
                             //binding.progressBar.progress = 100
                             val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
-                            transferLog.save(dateAndTime + ", ")
-                            transferLog.save("transfer file=" + file.toString() + ": OK\n")
+                            appLog.save(dateAndTime + ", ")
+                            appLog.save("transfer file=" + file.toString() + ": OK\n")
                             filePath.renameTo(newFilePath)
-                            transferLog.save(dateAndTime + ", ")
-                            transferLog.save("file was renamed to " + newFileName + "\n")
+                            appLog.save(dateAndTime + ", ")
+                            appLog.save("file was renamed to " + newFileName + "\n")
                         }
                     }
                 })

@@ -3,17 +3,16 @@ package com.example.facedetection
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.widget.Toast
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
+import com.example.facedetection.MainActivity.Global.Companion.videoDynamicUrl
+import com.example.facedetection.MainActivity.Global.Companion.videoStaticUrl
 import com.example.facedetection.authentication.LoginActivity
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
 import com.example.facedetection.videodownload.AndroidDownloader
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -26,6 +25,8 @@ class SettingsFragment: PreferenceFragmentCompat(){
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(prefContext)
 
         setPreferencesFromResource(R.xml.preference, rootKey)
+        this.findPreference<Preference>("videoDynamicPreference")?.summary = sharedPref.getString("videoDynamicPreference", "")
+        this.findPreference<Preference>("videoStaticPreference")?.summary = sharedPref.getString("videoStaticPreference", "")
         this.findPreference<Preference>("dlPreference")?.summary = sharedPref.getString("dlPreference", "")
         // set restriction on input to be an integer value for detection interval
         val logPreference1 = this.findPreference<EditTextPreference>("logPreference1")
@@ -39,18 +40,25 @@ class SettingsFragment: PreferenceFragmentCompat(){
             editText.inputType = InputType.TYPE_CLASS_NUMBER
         }
 
+        this.findPreference<Preference>("videoDynamicPreference")?.setOnPreferenceClickListener {
+            val downloader = AndroidDownloader(prefContext)
+            downloader.execDownload(videoDynamicUrl)
+            //this.findPreference<Preference>("videoDynamicPreference")?.summary = dlAsof
+            true
+        }
+
+        this.findPreference<Preference>("videoStaticPreference")?.setOnPreferenceClickListener {
+            val fileName: String = videoStaticUrl.substring(videoStaticUrl.lastIndexOf('/') + 1)
+            val downloader = AndroidDownloader(prefContext)
+            downloader.execDownload(videoStaticUrl)
+            this.findPreference<Preference>("videoStaticPreference")?.summary = dlAsof
+            true
+        }
+
         this.findPreference<Preference>("dlPreference")?.setOnPreferenceClickListener {
             val downloader = AndroidDownloader(prefContext)
-
-            downloader.downloadFile(emarthUrl)
-            Toast.makeText(prefContext, "Download Started", Toast.LENGTH_LONG).show()
-
-            val editor = sharedPref.edit()
-            editor.putString("dlPreference", dlAsof)
-            editor.apply()
-
+            downloader.execDownload(emarthUrl)
             this.findPreference<Preference>("dlPreference")?.summary = dlAsof
-
             true
         }
 

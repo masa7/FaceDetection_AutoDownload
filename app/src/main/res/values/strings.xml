@@ -3,7 +3,8 @@
     <string name="turn_camera">Turn Camera</string>
     <string name="stop_camera">Stop Camera</string>
     <string name="start_camera">Start Camera</string>
-    <string name="logmode_msg">Face detection program has 8 modes (4 execution mode * 2 camera side). Detection results will be displayed by clicking stop button below.</string>
+    <string name="logmode_msg">Face detection program is running</string>
+    <string name="video_dl_msg">設定画面から動画ファイルをダウンロードしてください</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="page2">page2</string>
@@ -31,7 +32,12 @@
     <string name="File_Upload">Tap to Select File &amp; Press Upload</string>
     <string name="serverClientId">281673539231-pfthpnmvu755bbk3mthb31kqtcbqdvqd.apps.googleusercontent.com</string>
 
+    <string name="videoDynamicPrefTitle">オート・ダウンロード実行日</string>
+    <string name="videoDynamicFilePrefTitle">オートDLファイル名</string>
+    <string name="videoStaticPrefTitle">ユーザー・ダウンロード実行日</string>
+    <string name="videoStaticFilePrefTitle">ユーザDLファイル名</string>
     <string name="dlPrefTitle">動画ダウンロード実行日</string>
+    <string name="dlFilePrefTitle">DLファイル名</string>
     <string name="videoCatTitle">動画設定</string>
     <string name="videoPrefTitle1">動画ファイル</string>
     <string name="videoPrefTitle2">動画URL</string>

@@ -27,10 +27,35 @@
     <PreferenceCategory app:title="@string/videoCatTitle">
         <Preference
             android:defaultValue="未実行"
+            app:key="videoDynamicPreference"
+            app:title="@string/videoDynamicPrefTitle" />
+        <Preference
+            android:defaultValue="未設定"
+            app:isPreferenceVisible="false"
+            app:key="videoDynamicFilePref"
+            app:title="@string/videoDynamicFilePrefTitle" />
+        <Preference
+            android:defaultValue="未実行"
+            app:key="videoStaticPreference"
+            app:title="@string/videoStaticPrefTitle" />
+        <Preference
+            android:defaultValue="未設定"
+            app:isPreferenceVisible="false"
+            app:key="videoStaticFilePref"
+            app:title="@string/videoStaticFilePrefTitle" />
+        <Preference
+            android:defaultValue="未実行"
+            app:isPreferenceVisible="false"
             app:key="dlPreference"
             app:title="@string/dlPrefTitle" />
+        <Preference
+            android:defaultValue="未設定"
+            app:isPreferenceVisible="false"
+            app:key="dlFilePref"
+            app:title="@string/dlFilePrefTitle" />
         <EditTextPreference
             android:defaultValue="set your local video file"
+            app:isPreferenceVisible="false"
             app:key="videoPreference1"
             app:title="@string/videoPrefTitle1"
             app:useSimpleSummaryProvider="true" />
