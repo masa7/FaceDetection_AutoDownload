@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
-import com.example.facedetection.MainActivity.Global.Companion.abbrDataLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
 import com.example.facedetection.MainActivity.Global.Companion.appLog
@@ -284,10 +283,14 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
         handler.post(timer)
 
+        // delete log file
         if(dd % holdDays == 0){
             deleteFile()
             clearCache()
         }
+        // delete video (1:Dynamic, 2:Static)
+        deleteVideo(1)
+        deleteVideo(2)
 
         if(file.isFirstRun()) {
             if(debugFlag) {
@@ -309,6 +312,11 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             "2" -> { // video play: local file
                 playVideoFile()
                 bg_cameraManager.cameraStart(cameraSide)
+
+                // auto video download (Dynamic)
+                val appContext = applicationContext()
+                val downloader = AndroidDownloader(appContext)
+                downloader.execDownload(videoDynamicUrl, false)
             }
 
             "3" -> { // video play: YouTube
@@ -326,15 +334,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 cameraManager.cameraStart(cameraSide)
             }
         }
-
-        // delete video (1:Dynamic, 2:Static)
-        deleteVideo(1)
-        deleteVideo(2)
-
-        // auto video download (Dynamic)
-        val appContext = applicationContext()
-        val downloader = AndroidDownloader(appContext)
-        downloader.execDownload(videoDynamicUrl)
 
         binding.buttonStopCamera.isVisible = true
         binding.buttonStartCamera.isVisible = false
@@ -377,7 +376,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val videoDynamicFile = sharedPref?.getString("videoDynamicFilePref", "")
         val videoStaticFile = sharedPref?.getString("videoStaticFilePref", "")
-        val videoDlFile = sharedPref?.getString("dlFilePref", "")
+        //val videoDlFile = sharedPref?.getString("dlFilePref", "")
         //var videoFile = sharedPref?.getString("videoPreference1", "")
         var playVideoFile = videoDynamicFile
 

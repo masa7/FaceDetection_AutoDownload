@@ -42,22 +42,22 @@ class SettingsFragment: PreferenceFragmentCompat(){
 
         this.findPreference<Preference>("videoDynamicPreference")?.setOnPreferenceClickListener {
             val downloader = AndroidDownloader(prefContext)
-            downloader.execDownload(videoDynamicUrl)
+            downloader.execDownload(videoDynamicUrl, true)
             //this.findPreference<Preference>("videoDynamicPreference")?.summary = dlAsof
             true
         }
 
         this.findPreference<Preference>("videoStaticPreference")?.setOnPreferenceClickListener {
-            val fileName: String = videoStaticUrl.substring(videoStaticUrl.lastIndexOf('/') + 1)
+            //val fileName: String = videoStaticUrl.substring(videoStaticUrl.lastIndexOf('/') + 1)
             val downloader = AndroidDownloader(prefContext)
-            downloader.execDownload(videoStaticUrl)
+            downloader.execDownload(videoStaticUrl, true)
             this.findPreference<Preference>("videoStaticPreference")?.summary = dlAsof
             true
         }
 
         this.findPreference<Preference>("dlPreference")?.setOnPreferenceClickListener {
             val downloader = AndroidDownloader(prefContext)
-            downloader.execDownload(emarthUrl)
+            downloader.execDownload(emarthUrl, true)
             this.findPreference<Preference>("dlPreference")?.summary = dlAsof
             true
         }

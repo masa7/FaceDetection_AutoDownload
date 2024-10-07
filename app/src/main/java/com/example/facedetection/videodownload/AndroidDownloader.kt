@@ -19,7 +19,6 @@ import com.example.facedetection.MainActivity.Global.Companion.dlDir
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.MainActivity.Global.Companion.videoDynamicUrl
 import com.example.facedetection.MainActivity.Global.Companion.videoStaticUrl
-import com.example.facedetection.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -87,7 +86,7 @@ class AndroidDownloader(
         return dlResult
     }
 
-    fun execDownload(url: String) {
+    fun execDownload(url: String, msgFlag: Boolean) {
         val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
         val dlAsof = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
         var nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url))
@@ -116,12 +115,14 @@ class AndroidDownloader(
                 dlResult = downloadWithCode(url, code)
 
                 if (!debugFlag) {
-                    appLog.save(dateAndTime + ": ")
+                    appLog.save(dateAndTime + ", ")
                     appLog.save(code.toString() + ", " + dlResult + ", " + url + "\n")
                 }
             }.invokeOnCompletion {
                 if (dlResult == -1L) {
-                    Toast.makeText(context, "新しい動画ファイルはありません", Toast.LENGTH_LONG).show()
+                    if(msgFlag) {
+                        Toast.makeText(context, "新しい動画ファイルはありません", Toast.LENGTH_LONG).show()
+                    }
                 } else {
                     Toast.makeText(context, "新しい動画ファイルのダウンロードが完了しました", Toast.LENGTH_LONG).show()
 
@@ -141,7 +142,9 @@ class AndroidDownloader(
                 }
             }
         } else {
-            Toast.makeText(context, "新しい動画ファイルはありません", Toast.LENGTH_LONG).show()
+            if(msgFlag) {
+                Toast.makeText(context, "新しい動画ファイルはありません", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
