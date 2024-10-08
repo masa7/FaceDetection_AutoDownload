@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
 class SignupActivity : AppCompatActivity() {
 
@@ -90,7 +89,8 @@ class SignupActivity : AppCompatActivity() {
                 // Save the user details in Firestore
                 userId?.let {
                     firestore.collection("Registration")
-                        .document(uniqueId)
+                        //.document(uniqueId)
+                        .document(userEmail)
                         .set(userMap)
                         .addOnSuccessListener {
                             Toast.makeText(applicationContext, "Account has been created and data saved", Toast.LENGTH_SHORT).show()

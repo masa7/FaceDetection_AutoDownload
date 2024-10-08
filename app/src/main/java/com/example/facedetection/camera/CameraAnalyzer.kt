@@ -6,7 +6,8 @@ import android.util.Log
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.storageType
-import com.example.facedetection.MainActivity.Global.Companion.userEmail
+import com.example.facedetection.MainActivity.Global.Companion.uID
+import com.example.facedetection.MainActivity.Global.Companion.uEmail
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
@@ -90,7 +91,7 @@ class CameraAnalyzer(
                         file.save(dateAndTime + ", ")
                         file.save(id.toString() + ", ")
                         file.save(rotationDegree.toString() + ", ")
-                        file.save(userEmail)
+                        file.save(uID)
                         file.save("\n")
 
                         // export data to firestore

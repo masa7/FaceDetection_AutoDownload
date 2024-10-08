@@ -53,8 +53,8 @@ class AndroidDownloader(
     override fun downloadFile(url: String): Long {
         var nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url))
 
-        if (getUrlType(url) == 2) {
-            nameOfFile = nameOfFile.substring(0,7) + "_" + dateStr + ".mp4"
+        if (getUrlType(url) == 2) { // videoStaticFile
+            nameOfFile = nameOfFile.substring(0, nameOfFile.length - 4) + "_" + dateStr + ".mp4"
         }
         //val filename: String = currentUrl.substring(currentUrl.lastIndexOf('/') + 1)
         val request = DownloadManager.Request(url.toUri())
@@ -94,19 +94,13 @@ class AndroidDownloader(
         val editor = sharedPref.edit()
         var dlResult = -1L
         var execFlag = true
-        val videoDynamicFile = "test_vd_" + dateStr + ".mp4"
 
-        if (getUrlType(url) == 2) {
-            nameOfFile = nameOfFile.substring(0,7) + "_" + dateStr + ".mp4"
-            if(File(dlDir, nameOfFile).exists()){
-                execFlag = false
-            }
+        if (getUrlType(url) == 2) { // videoStaticFile
+            nameOfFile = nameOfFile.substring(0, nameOfFile.length - 4) + "_" + dateStr + ".mp4"
         }
 
-        if (getUrlType(url) == 1) {
-            if (File(dlDir, videoDynamicFile).exists()) {
-                execFlag = false
-            }
+        if(File(dlDir, nameOfFile).exists()){
+            execFlag = false
         }
 
         if(execFlag) {

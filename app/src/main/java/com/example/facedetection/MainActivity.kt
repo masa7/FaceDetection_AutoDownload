@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
 import com.example.facedetection.MainActivity.Global.Companion.appLog
+import com.example.facedetection.MainActivity.Global.Companion.auth
 import com.example.facedetection.MainActivity.Global.Companion.dateFormatter
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.debugFlag
@@ -32,9 +33,13 @@ import com.example.facedetection.MainActivity.Global.Companion.dlDir
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.MainActivity.Global.Companion.emarthYT
 import com.example.facedetection.MainActivity.Global.Companion.holdDays
+import com.example.facedetection.MainActivity.Global.Companion.nameOfPlayedVideo
 import com.example.facedetection.MainActivity.Global.Companion.storageType
-import com.example.facedetection.MainActivity.Global.Companion.userEmail
+import com.example.facedetection.MainActivity.Global.Companion.uEmail
+import com.example.facedetection.MainActivity.Global.Companion.uID
+import com.example.facedetection.MainActivity.Global.Companion.uidCommon
 import com.example.facedetection.MainActivity.Global.Companion.videoDynamicUrl
+import com.example.facedetection.MainActivity.Global.Companion.videoStaticUrl
 import com.example.facedetection.camera.CameraManager
 import com.example.facedetection.camera.bgCameraManager
 import com.example.facedetection.databinding.ActivityMainBinding
@@ -63,6 +68,8 @@ import java.time.temporal.ChronoUnit
 import com.example.facedetection.SettingsFragment
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
 import com.example.facedetection.videodownload.AndroidDownloader
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 
 class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
@@ -140,7 +147,11 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         companion object {
             @JvmField
             val auth: FirebaseAuth = FirebaseAuth.getInstance()
-            val userEmail = auth.currentUser?.email
+            var uEmail = ""
+            var uID = ""
+            val uidCommon = "test"
+            var videoDynamicUrl = ""
+            var videoStaticUrl = ""
 
             // 1: Internal Storage, 2: External Storage(Download folder)
             val storageType: String = "1"
@@ -156,10 +167,9 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             val appLog = FileUtils(abbrDataLog + ".txt", "2")
 
             val dlDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
-            val videoDynamicUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/test_vd_" + dateStr + ".mp4"
-            val videoStaticUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/test_vs.mp4"
             val emarthUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/Influenza_v2.mp4"
             val emarthYT: String = "https://www.youtube.com/embed/Qghjl2tJsoo"
+            var nameOfPlayedVideo: String = ""
         }
     }
 
@@ -274,6 +284,29 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         binding.counterText.text = file.read()
     }
 
+    private fun setFieldDataToPreference(fbCollection: String, fbDocument: String, fbField: String){
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPref.edit()
+        val db = Firebase.firestore
+
+        db.collection(fbCollection)
+            .document(fbDocument)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document != null && document.data != null) {
+                        val fieldData = document.data?.get(fbField).toString()
+                        editor.putString(fbField + "Pref", fieldData)
+                        editor.apply()
+                    }
+                } else {
+                    appLog.save("Field data retrieve failed: " + task.exception)
+                }
+            }
+            .addOnFailureListener { e -> Log.d("getFieldData", "Error retrieving field data: " + e)}
+    }
+
     private fun detectAndPlayStart() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val execMode = sharedPref?.getString("listPreference", "2")
@@ -301,11 +334,24 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 ).show()
             }
             transferFile()
+            setFieldDataToPreference("Registration", auth.currentUser?.email.orEmpty(), "uniqueId")
+        }
+
+        // update user specific paramaters
+        uEmail = sharedPref?.getString("userEmailPref", "") ?: ""
+        uID = sharedPref?.getString("uniqueIdPref", "") ?: ""
+        if(uID in arrayOf("72127626", "80786523")){ // test for testemailaddress2@emaill.com, test3@masa.com
+            videoDynamicUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uID +"_vd_" + dateStr + ".mp4"
+            videoStaticUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uID + "_vs.mp4"
+
+        } else {
+            videoDynamicUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uidCommon +"_vd_" + dateStr + ".mp4"
+            videoStaticUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uidCommon + "_vs.mp4"
         }
 
         file.save(dateAndTime + ", ")
         file.save("LaunchApp, Mode=" + execMode + cameraSide + ", ")
-        file.save(userEmail)
+        file.save(uID)
         file.save("\n")
 
         when (execMode) {
@@ -372,13 +418,12 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     }
 
     private fun playVideoFile() {
-
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val videoDynamicFile = sharedPref?.getString("videoDynamicFilePref", "")
         val videoStaticFile = sharedPref?.getString("videoStaticFilePref", "")
         //val videoDlFile = sharedPref?.getString("dlFilePref", "")
         //var videoFile = sharedPref?.getString("videoPreference1", "")
-        var playVideoFile = videoDynamicFile
+        var playVideoFileName = videoDynamicFile
 
         val directory = File(dlDir)
 
@@ -399,20 +444,24 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
 
         if (dynamicFileCnt != 0) {
-            playVideoFile = videoDynamicFile
+            playVideoFileName = videoDynamicFile
             if(debugFlag) {
-                Toast.makeText(this, "Playing " + playVideoFile, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Playing " + playVideoFileName, Toast.LENGTH_SHORT).show()
             }
-        } else if(staticFileCnt != 0){
-            playVideoFile = videoStaticFile
-            if(debugFlag){
-                Toast.makeText(this,"Playing " + playVideoFile, Toast.LENGTH_SHORT).show()
+        } else if(staticFileCnt != 0) {
+            playVideoFileName = videoStaticFile
+            if (debugFlag) {
+                Toast.makeText(this, "Playing " + playVideoFileName, Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Toast.makeText(this, getString(R.string.video_dl_msg), Toast.LENGTH_LONG).show()
+        } else { // dynamicFileCnt == 0 & staticFileCnt == 0
+            // initial video download (Static)
+            val appContext = applicationContext()
+            val downloader = AndroidDownloader(appContext)
+            downloader.execDownload(videoStaticUrl, true)
         }
 
-        videoView.setVideoPath(dlDir + "/" + playVideoFile)
+        nameOfPlayedVideo = playVideoFileName.orEmpty()
+        videoView.setVideoPath(dlDir + "/" + playVideoFileName)
         videoView.start()
     }
 
@@ -481,14 +530,18 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val videoDynamicAsof = sharedPref?.getString("videoDynamicPreference", "")
         val videoStaticAsof = sharedPref?.getString("videoStaticPreference", "")
-        var videoAbbr = "test_v"
+        var videoAbbr = uidCommon
         var baseAsof = videoDynamicAsof
 
+        if(uID in arrayOf("72127626", "80786523")){
+            videoAbbr = uID
+        }
+
         if(videoType == 1){
-            videoAbbr = videoAbbr + "d_"
+            videoAbbr = videoAbbr + "_vd_"
             baseAsof = videoDynamicAsof
         }else if(videoType == 2){
-            videoAbbr = videoAbbr + "s_"
+            videoAbbr = videoAbbr + "_vs_"
             baseAsof = videoStaticAsof
         }
         val videoList = File(dlDir).list()?.filter{ it.startsWith(videoAbbr) }
