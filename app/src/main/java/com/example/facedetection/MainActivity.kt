@@ -17,10 +17,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import android.widget.VideoView
+import androidx.annotation.UiThread
+import androidx.annotation.WorkerThread
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
 import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
@@ -30,7 +33,6 @@ import com.example.facedetection.MainActivity.Global.Companion.dateFormatter
 import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.debugFlag
 import com.example.facedetection.MainActivity.Global.Companion.dlDir
-import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.MainActivity.Global.Companion.emarthYT
 import com.example.facedetection.MainActivity.Global.Companion.holdDays
 import com.example.facedetection.MainActivity.Global.Companion.nameOfPlayedVideo
@@ -65,11 +67,14 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import com.example.facedetection.SettingsFragment
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
 import com.example.facedetection.videodownload.AndroidDownloader
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
@@ -107,8 +112,16 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private fun askAllPermissions() {
         if (allPermissionGranted()) {
+            val authEmail = auth.currentUser?.email.orEmpty()
             screenSetting()
-            detectAndPlayStart()
+
+            lifecycleScope.launch {
+                val authId = getFieldData("Registration", authEmail, "uniqueId")
+                setAllFieldData("Registration", authEmail)
+                //val authId = getFieldAwait("uniqueId").orEmpty()
+                detectAndPlayStart(authEmail, authId)
+            }
+            //detectAndPlayStart()
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, 0)
         }
@@ -122,8 +135,15 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 0) {
             if (allPermissionGranted()) {
+                val authEmail = auth.currentUser?.email.orEmpty()
                 screenSetting()
-                detectAndPlayStart()
+
+                lifecycleScope.launch {
+                    val authId = getFieldData("Registration", authEmail, "uniqueId")
+                    setAllFieldData("Registration", authEmail)
+                    detectAndPlayStart(authEmail, authId)
+                }
+                //detectAndPlayStart()
             } else {
                 Toast.makeText(
                     this,
@@ -133,7 +153,6 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             }
         }
     }
-
 
     val handler = Handler(Looper.getMainLooper())
     val timer = object : Runnable {
@@ -218,8 +237,15 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             }
 
             buttonStartCamera.setOnClickListener {
+                val authEmail = auth.currentUser?.email.orEmpty()
                 screenSetting()
-                detectAndPlayStart()
+
+                lifecycleScope.launch {
+                    val authId = getFieldData("Registration", authEmail, "uniqueId")
+                    setAllFieldData("Registration", authEmail)
+                    detectAndPlayStart(authEmail, authId)
+                }
+                //detectAndPlayStart()
             }
         }
     }
@@ -284,35 +310,110 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         binding.counterText.text = file.read()
     }
 
-    private fun setFieldDataToPreference(fbCollection: String, fbDocument: String, fbField: String){
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPref.edit()
-        val db = Firebase.firestore
+    private fun getFieldAwait(fbField: String): String?{
+        var fieldData: String?
 
-        db.collection(fbCollection)
-            .document(fbDocument)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val document = task.result
-                    if (document != null && document.data != null) {
-                        val fieldData = document.data?.get(fbField).toString()
-                        editor.putString(fbField + "Pref", fieldData)
-                        editor.apply()
-                    }
-                } else {
-                    appLog.save("Field data retrieve failed: " + task.exception)
-                }
-            }
-            .addOnFailureListener { e -> Log.d("getFieldData", "Error retrieving field data: " + e)}
+        runBlocking {
+            fieldData = getFieldData("Registration", auth.currentUser?.email.orEmpty(), "uniqueId")
+        }
+        return fieldData
     }
 
-    private fun detectAndPlayStart() {
+    private suspend fun setAllFieldData(fbCollection: String, fbDocument: String) {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPref.edit()
+        val userEmail = sharedPref?.getString("userEmailPref", "") ?: ""
+        val authEmail = auth.currentUser?.email.orEmpty()
+        val fieldList = arrayOf("firmName", "officeAddress", "phoneNumber", "userName", "registrationDate")
+
+        if(userEmail != fbDocument) {
+            //lifecycleScope.launch {
+                fieldList.forEach{
+                    val result = getFieldData(fbCollection, authEmail, it)
+                    editor.putString(it + "Pref", result)
+                    editor.apply()
+                }
+            //}
+        }
+    }
+
+    @WorkerThread
+    private suspend fun getFieldData(fbCollection: String, fbDocument: String, fbField: String): String {
+        return suspendCoroutine { continuation ->
+            try {
+                val db = Firebase.firestore
+                val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+                val userEmail = sharedPref?.getString("userEmailPref", "") ?: ""
+                val requestedField = sharedPref?.getString(fbField + "Pref", "") ?: ""
+
+                if(userEmail != fbDocument) {
+                    db.collection(fbCollection)
+                        .document(fbDocument)
+                        .get()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val document = task.result
+                                if (document != null && document.data != null) {
+                                    val result = document.data?.get(fbField).toString()
+                                    continuation.resume(result)
+
+                                    if(debugFlag) {
+                                        val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                                        appLog.save(dateAndTime + ": " + result + "\n")
+                                    }
+                                }
+                            } else {
+                                val result = "NA1"
+                                continuation.resume(result)
+
+                                if(debugFlag) {
+                                    val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                                    appLog.save(dateAndTime + ": (NA1) Field data in Firestore is empty, " + task.exception + "\n")
+                                }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            val result = "NA2"
+                            continuation.resume(result)
+
+                            if(debugFlag) {
+                                val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                                appLog.save(dateAndTime + ": (NA2) Firestore connection failed \n")
+                            }
+
+                            Log.d("getFieldData", "Error retrieving field data: " + e)
+                        }
+                } else {
+                    continuation.resume(requestedField)
+                }
+            } catch (e: Exception) {
+                val result = "NA3"
+                continuation.resume(result)
+
+                if(debugFlag) {
+                    val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
+                    appLog.save(dateAndTime + ": (NA3) getFieldData function failed \n")
+                }
+            }
+        }
+    }
+
+    @UiThread
+    private fun detectAndPlayStart(curUserEmail: String, userUniqueId: String) {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPref.edit()
         val execMode = sharedPref?.getString("listPreference", "2")
         val cameraSide = sharedPref?.getString("list2Preference", "1") ?: "1"
-        val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
         val dd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd")).toInt()
+
+        // set global parameters
+        uEmail = curUserEmail
+        uID = userUniqueId
+
+        // update user profile in preference file
+        editor.putString("userEmailPref", curUserEmail)
+        editor.putString("uniqueIdPref", userUniqueId)
+        editor.apply()
 
         handler.post(timer)
 
@@ -334,12 +435,9 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                 ).show()
             }
             transferFile()
-            setFieldDataToPreference("Registration", auth.currentUser?.email.orEmpty(), "uniqueId")
         }
 
-        // update user specific paramaters
-        uEmail = sharedPref?.getString("userEmailPref", "") ?: ""
-        uID = sharedPref?.getString("uniqueIdPref", "") ?: ""
+        // create user specific URL
         if(uID in arrayOf("72127626", "80786523")){ // test for testemailaddress2@emaill.com, test3@masa.com
             videoDynamicUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uID +"_vd_" + dateStr + ".mp4"
             videoStaticUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uID + "_vs.mp4"
@@ -349,6 +447,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             videoStaticUrl = "https://emartech.jp/wp-content/uploads/2019/06/" + uidCommon + "_vs.mp4"
         }
 
+        val dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss"))
         file.save(dateAndTime + ", ")
         file.save("LaunchApp, Mode=" + execMode + cameraSide + ", ")
         file.save(uID)
@@ -384,7 +483,7 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         binding.buttonStopCamera.isVisible = true
         binding.buttonStartCamera.isVisible = false
     }
-
+    
     private fun detectAndPlayStop() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val execMode = sharedPref?.getString("listPreference", "2")

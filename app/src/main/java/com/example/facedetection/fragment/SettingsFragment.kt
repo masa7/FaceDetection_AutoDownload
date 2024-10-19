@@ -1,4 +1,4 @@
-package com.example.facedetection
+package com.example.facedetection.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +7,12 @@ import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import com.example.facedetection.LogdataActivity
 import com.example.facedetection.MainActivity.Global.Companion.emarthUrl
 import com.example.facedetection.MainActivity.Global.Companion.videoDynamicUrl
 import com.example.facedetection.MainActivity.Global.Companion.videoStaticUrl
+import com.example.facedetection.ProfileActivity
+import com.example.facedetection.R
 import com.example.facedetection.authentication.LoginActivity
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
 import com.example.facedetection.videodownload.AndroidDownloader
@@ -64,6 +67,12 @@ class SettingsFragment: PreferenceFragmentCompat(){
 
         this.findPreference<Preference>("logPreference")?.setOnPreferenceClickListener {
             val intent = Intent(context, LogdataActivity::class.java)
+            activity?.startActivity(intent)
+            true
+        }
+
+        this.findPreference<Preference>("account")?.setOnPreferenceClickListener {
+            val intent = Intent(context, ProfileActivity::class.java)
             activity?.startActivity(intent)
             true
         }

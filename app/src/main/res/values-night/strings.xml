@@ -11,6 +11,15 @@
     <string name="rb_background">バックグラウンド</string>
     <string name="rb_foreground">顔検知テスト</string>
     <string name="settings_title">設定</string>
+    <string name="profile_title">アカウント</string>
+
+    <string name="accountCatTitle">アカウント</string>
+    <string name="accountId">ユーザーID</string>
+    <string name="accountEmail">Eメール</string>
+    <string name="accountName">名前</string>
+    <string name="accountPharma">薬局名</string>
+    <string name="accountTel">電話番号</string>
+    <string name="accountAddress">薬局住所</string>
 
     <string name="title_string"><font size="15">EM APPLIED RESEARCH &amp; TECHNOLOGY HUB</font></string>
     <string name="TAC">I agree to the Terms and Conditions</string>
@@ -45,6 +54,7 @@
     <string name="list2PrefTitle">カメラ選択</string>
     <string name="logPrefTitle">データ</string>
     <string name="logdataPrefTitle">ログ表示</string>
+    <string name="reset">リセット</string>
     <string name="uploadPrefTitle">ログ・DBアップロード</string>
     <string name="locationPrefTitle">ログ用・現在地</string>
     <string name="logout">ログアウト</string>

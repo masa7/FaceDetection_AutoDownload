@@ -1,11 +1,8 @@
 package com.example.facedetection
 
-import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil.setContentView
+import com.example.facedetection.fragment.SettingsFragment
 import com.example.facedetection.utils.BaseActivity
 
 class SettingsActivity : BaseActivity() {

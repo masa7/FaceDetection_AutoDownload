@@ -75,7 +75,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="">
+        app:title="ユーザー">
+        <Preference
+            android:defaultValue="account"
+            app:key="account"
+            app:title="@string/accountCatTitle" />
         <Preference
             android:defaultValue="logout"
             app:key="logout"

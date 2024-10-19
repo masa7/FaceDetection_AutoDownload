@@ -18,12 +18,19 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.preference.PreferenceManager
+import com.example.facedetection.MainActivity.Global
+import com.example.facedetection.MainActivity.Global.Companion
+import com.example.facedetection.MainActivity.Global.Companion.appLog
+import com.example.facedetection.MainActivity.Global.Companion.uEmail
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.play.integrity.internal.al
+import com.google.android.play.integrity.internal.f
 import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginActivity : AppCompatActivity() {
@@ -126,9 +133,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-
-
-
     }
 
     fun signinWithFirebase(userEmail: String, userPassword: String) {
@@ -136,19 +140,16 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(userEmail, userPassword)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
-
                     Toast.makeText(applicationContext, "Login successful.", Toast.LENGTH_SHORT)
                         .show()
+
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
 
                 } else {
-
                     Toast.makeText(applicationContext, "Please check login details.", Toast.LENGTH_SHORT
                     ).show()
-
                 }
             }
 
