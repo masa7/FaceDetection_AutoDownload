@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<PreferenceCategory app:title="@string/accountCatTitle">
+    <Preference
+        android:defaultValue=""
+        app:key="accountIdPref"
+        app:title="@string/accountId" />
+    <Preference
+        android:defaultValue=""
+        app:key="accountEmailPref"
+        app:title="@string/accountEmail" />
+    <Preference
+        android:defaultValue=""
+        app:key="accountNamePref"
+        app:title="@string/accountName" />
+    <Preference
+        android:defaultValue=""
+        app:key="accountPharmaPref"
+        app:title="@string/accountPharma" />
+    <Preference
+        android:defaultValue=""
+        app:key="accountTelPref"
+        app:title="@string/accountTel" />
+    <Preference
+        android:defaultValue=""
+        app:key="accountAddressPref"
+        app:title="@string/accountAddress" />
+</PreferenceCategory>
+
+
+</androidx.preference.PreferenceScreen>
