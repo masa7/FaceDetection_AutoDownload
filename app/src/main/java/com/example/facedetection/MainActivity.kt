@@ -35,6 +35,7 @@ import com.example.facedetection.MainActivity.Global.Companion.debugFlag
 import com.example.facedetection.MainActivity.Global.Companion.dlDir
 import com.example.facedetection.MainActivity.Global.Companion.emarthYT
 import com.example.facedetection.MainActivity.Global.Companion.holdDays
+import com.example.facedetection.MainActivity.Global.Companion.loginFlag
 import com.example.facedetection.MainActivity.Global.Companion.nameOfPlayedVideo
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.MainActivity.Global.Companion.uEmail
@@ -103,69 +104,11 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
     }.toTypedArray()
 
-
-    private fun allPermissionGranted(): Boolean {
-        return REQUIRED_PERMISSIONS.all {
-            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    private fun askAllPermissions() {
-        if (allPermissionGranted()) {
-            val authEmail = auth.currentUser?.email.orEmpty()
-            screenSetting()
-
-            lifecycleScope.launch {
-                val authId = getFieldData("Registration", authEmail, "uniqueId")
-                setAllFieldData("Registration", authEmail)
-                //val authId = getFieldAwait("uniqueId").orEmpty()
-                detectAndPlayStart(authEmail, authId)
-            }
-            //detectAndPlayStart()
-        } else {
-            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, 0)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 0) {
-            if (allPermissionGranted()) {
-                val authEmail = auth.currentUser?.email.orEmpty()
-                screenSetting()
-
-                lifecycleScope.launch {
-                    val authId = getFieldData("Registration", authEmail, "uniqueId")
-                    setAllFieldData("Registration", authEmail)
-                    detectAndPlayStart(authEmail, authId)
-                }
-                //detectAndPlayStart()
-            } else {
-                Toast.makeText(
-                    this,
-                    "One of the permissions (Camera, File access) was denied.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
-    val handler = Handler(Looper.getMainLooper())
-    val timer = object : Runnable {
-        override fun run() {
-            binding.buttonControl.isVisible = false
-            handler.postDelayed(this, 7000)
-        }
-    }
-
     class Global : Application() {
         companion object {
             @JvmField
             val auth: FirebaseAuth = FirebaseAuth.getInstance()
+            var loginFlag = false
             var uEmail = ""
             var uID = ""
             val uidCommon = "test"
@@ -196,8 +139,75 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         file = FileUtils(abbrFaceDetectionLog + dateStr + ".txt", storageType)
     }
 
+    private fun allPermissionGranted(): Boolean {
+        return REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun askAllPermissions() {
+        if (allPermissionGranted()) {
+            screenSetting()
+
+            lifecycleScope.launch {
+                //val authId = getFieldAwait("uniqueId").orEmpty()
+                uID = getFieldData("uniqueId")
+                setFieldDataToSharedPref()
+                detectAndPlayStart()
+            }
+        } else {
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, 0)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 0) {
+            if (allPermissionGranted()) {
+                screenSetting()
+
+                lifecycleScope.launch {
+                    uID = getFieldData("uniqueId")
+                    setFieldDataToSharedPref()
+                    detectAndPlayStart()
+                }
+            } else {
+                Toast.makeText(
+                    this,
+                    "One of the permissions (Camera, File access) was denied.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    val handler = Handler(Looper.getMainLooper())
+    val timer = object : Runnable {
+        override fun run() {
+            binding.buttonControl.isVisible = false
+            handler.postDelayed(this, 7000)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val userEmail = sharedPref?.getString("userEmailPref", "") ?: ""
+
+        if(loginFlag){
+            uEmail = auth.currentUser?.email.orEmpty()
+            if(uEmail == userEmail){
+                loginFlag = false
+            }
+        } else {
+            uEmail = userEmail
+            loginFlag = false
+        }
 
         setContentView(binding.root)
         supportActionBar?.hide()
@@ -237,15 +247,13 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             }
 
             buttonStartCamera.setOnClickListener {
-                val authEmail = auth.currentUser?.email.orEmpty()
                 screenSetting()
 
                 lifecycleScope.launch {
-                    val authId = getFieldData("Registration", authEmail, "uniqueId")
-                    setAllFieldData("Registration", authEmail)
-                    detectAndPlayStart(authEmail, authId)
+                    uID = getFieldData("uniqueId")
+                    setFieldDataToSharedPref()
+                    detectAndPlayStart()
                 }
-                //detectAndPlayStart()
             }
         }
     }
@@ -314,39 +322,22 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         var fieldData: String?
 
         runBlocking {
-            fieldData = getFieldData("Registration", auth.currentUser?.email.orEmpty(), "uniqueId")
+            fieldData = getFieldData(fbField)
         }
         return fieldData
     }
 
-    private suspend fun setAllFieldData(fbCollection: String, fbDocument: String) {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPref.edit()
-        val userEmail = sharedPref?.getString("userEmailPref", "") ?: ""
-        val authEmail = auth.currentUser?.email.orEmpty()
-        val fieldList = arrayOf("firmName", "officeAddress", "phoneNumber", "userName", "registrationDate")
-
-        if(userEmail != fbDocument) {
-            //lifecycleScope.launch {
-                fieldList.forEach{
-                    val result = getFieldData(fbCollection, authEmail, it)
-                    editor.putString(it + "Pref", result)
-                    editor.apply()
-                }
-            //}
-        }
-    }
-
     @WorkerThread
-    private suspend fun getFieldData(fbCollection: String, fbDocument: String, fbField: String): String {
+    private suspend fun getFieldData(fbField: String): String {
         return suspendCoroutine { continuation ->
             try {
                 val db = Firebase.firestore
+                val fbCollection = "Registration"
+                val fbDocument = uEmail
                 val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-                val userEmail = sharedPref?.getString("userEmailPref", "") ?: ""
                 val requestedField = sharedPref?.getString(fbField + "Pref", "") ?: ""
 
-                if(userEmail != fbDocument) {
+                if(loginFlag){
                     db.collection(fbCollection)
                         .document(fbDocument)
                         .get()
@@ -398,22 +389,34 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
-    @UiThread
-    private fun detectAndPlayStart(curUserEmail: String, userUniqueId: String) {
+    @WorkerThread
+    private suspend fun setFieldDataToSharedPref() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = sharedPref.edit()
+        val fieldList = arrayOf("firmName", "officeAddress", "phoneNumber", "userName", "registrationDate")
+
+        if(loginFlag){
+            fieldList.forEach{
+                val result = getFieldData(it)
+                editor.putString(it + "Pref", result)
+                editor.apply()
+            }
+        }
+
+        // save user authentication information
+        editor.putString("userEmailPref", uEmail)
+        editor.putString("uniqueIdPref", uID)
+        editor.apply()
+
+        loginFlag = false
+    }
+
+    @UiThread
+    private fun detectAndPlayStart() {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val execMode = sharedPref?.getString("listPreference", "2")
         val cameraSide = sharedPref?.getString("list2Preference", "1") ?: "1"
         val dd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd")).toInt()
-
-        // set global parameters
-        uEmail = curUserEmail
-        uID = userUniqueId
-
-        // update user profile in preference file
-        editor.putString("userEmailPref", curUserEmail)
-        editor.putString("uniqueIdPref", userUniqueId)
-        editor.apply()
 
         handler.post(timer)
 
@@ -795,6 +798,5 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             }
         }
     }
-
 }
 

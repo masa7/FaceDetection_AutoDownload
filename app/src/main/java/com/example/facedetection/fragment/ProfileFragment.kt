@@ -6,13 +6,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.example.facedetection.R
 import com.example.facedetection.utils.SingletonContext.Companion.applicationContext
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class ProfileFragment: PreferenceFragmentCompat(){
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         // set Fragment defined by user_profile.xml
-        val dlAsof = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
         val prefContext = applicationContext()
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(prefContext)
 

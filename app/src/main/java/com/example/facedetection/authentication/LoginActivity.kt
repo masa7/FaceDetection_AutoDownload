@@ -18,11 +18,8 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.preference.PreferenceManager
-import com.example.facedetection.MainActivity.Global
-import com.example.facedetection.MainActivity.Global.Companion
 import com.example.facedetection.MainActivity.Global.Companion.appLog
-import com.example.facedetection.MainActivity.Global.Companion.uEmail
+import com.example.facedetection.MainActivity.Global.Companion.loginFlag
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -32,6 +29,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.play.integrity.internal.al
 import com.google.android.play.integrity.internal.f
 import com.google.firebase.auth.GoogleAuthProvider
+import java.security.KeyStore.TrustedCertificateEntry
 
 class LoginActivity : AppCompatActivity() {
 
@@ -140,8 +138,9 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(userEmail, userPassword)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(applicationContext, "Login successful.", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(applicationContext, "Login successful.", Toast.LENGTH_SHORT).show()
+
+                    loginFlag = true
 
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
