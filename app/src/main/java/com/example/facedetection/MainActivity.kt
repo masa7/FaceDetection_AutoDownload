@@ -26,7 +26,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.example.facedetection.MainActivity.Global.Companion.abbrFaceDetectionLog
-import com.example.facedetection.MainActivity.Global.Companion.abbrTransferredFile
 import com.example.facedetection.MainActivity.Global.Companion.appLog
 import com.example.facedetection.MainActivity.Global.Companion.auth
 import com.example.facedetection.MainActivity.Global.Companion.dateFormatter
@@ -34,13 +33,11 @@ import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.debugFlag
 import com.example.facedetection.MainActivity.Global.Companion.dlDir
 import com.example.facedetection.MainActivity.Global.Companion.emarthYT
-import com.example.facedetection.MainActivity.Global.Companion.holdDays
 import com.example.facedetection.MainActivity.Global.Companion.loginFlag
 import com.example.facedetection.MainActivity.Global.Companion.nameOfPlayedVideo
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.MainActivity.Global.Companion.uEmail
 import com.example.facedetection.MainActivity.Global.Companion.uID
-import com.example.facedetection.MainActivity.Global.Companion.uidCommon
 import com.example.facedetection.MainActivity.Global.Companion.videoDynamicUrl
 import com.example.facedetection.MainActivity.Global.Companion.videoStaticUrl
 import com.example.facedetection.camera.CameraManager
@@ -87,6 +84,9 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private lateinit var webView: WebView
     private var file: FileUtils
     private var selectedFileUri: Uri? = null
+    private val holdDays = 5
+    private val uidCommon = "test"
+    private val abbrTransferredFile = "Done_"
 
     private val REQUIRED_PERMISSIONS = mutableListOf<String>().apply {
         add(android.Manifest.permission.CAMERA)
@@ -107,11 +107,12 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     class Global : Application() {
         companion object {
             @JvmField
+            val debugFlag = false
+
             val auth: FirebaseAuth = FirebaseAuth.getInstance()
             var loginFlag = false
             var uEmail = ""
             var uID = ""
-            val uidCommon = "test"
             var videoDynamicUrl = ""
             var videoStaticUrl = ""
 
@@ -120,13 +121,9 @@ class MainActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
             val dateStr = LocalDateTime.now().format(dateFormatter)
             val abbrFaceDetectionLog = "Log_"
-            val abbrTransferredFile = "Done_"
-            val abbrDataLog = "AppLog"
-            val holdDays = 5
-            val debugFlag = false
 
             // set EMarth download URL to below global variable
-            val appLog = FileUtils(abbrDataLog + ".txt", "2")
+            val appLog = FileUtils("AppLog.txt", "2")
 
             val dlDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
             val emarthUrl: String = "https://emartech.jp/wp-content/uploads/2019/06/Influenza_v2.mp4"

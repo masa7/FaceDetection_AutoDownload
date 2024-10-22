@@ -12,7 +12,7 @@ import retrofit2.http.Part
 interface MyAPI {
 
     @Multipart
-    @POST("Api.php?apicall=upload")
+    @POST("upload.php?apicall=upload")
     fun uploadFile(
         @Part file: MultipartBody.Part,
         @Part("desc") desc: RequestBody
@@ -21,10 +21,8 @@ interface MyAPI {
     companion object {
         operator fun invoke(): MyAPI {
             return Retrofit.Builder()
-                //.baseUrl("http://10.0.2.2/FileUploader/")
-                //.baseUrl("http://xxx.xxx.x.xxx/FileUploader/")  //*check ipconfig for localhost
-                //.baseUrl("http://172.20.10.4/FileUploader/")  //*check ipconfig for localhost
-                .baseUrl("http://192.168.3.19/FileUploader/")  //*Sony SO-01M
+                .baseUrl("http://159.65.133.94")
+                //.baseUrl("http://192.168.3.17/FileUploader/")  //*Sony SO-01M
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(MyAPI::class.java)

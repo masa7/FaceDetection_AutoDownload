@@ -6,7 +6,6 @@ import com.example.facedetection.MainActivity.Global.Companion.dateStr
 import com.example.facedetection.MainActivity.Global.Companion.nameOfPlayedVideo
 import com.example.facedetection.MainActivity.Global.Companion.storageType
 import com.example.facedetection.MainActivity.Global.Companion.uID
-import com.example.facedetection.MainActivity.Global.Companion.uEmail
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face

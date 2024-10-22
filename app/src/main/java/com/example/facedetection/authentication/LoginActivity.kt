@@ -120,6 +120,8 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            loginFlag = true
+
             val intent = Intent(this@LoginActivity, SignupActivity::class.java)
             startActivity(intent)
 
