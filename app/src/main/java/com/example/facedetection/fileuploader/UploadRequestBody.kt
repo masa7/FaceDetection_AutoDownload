@@ -48,6 +48,6 @@ class UploadRequestBody(
     }
 
     companion object {
-        private const val DEFAULT_BUFFER_SIZE = 2048
+        private const val DEFAULT_BUFFER_SIZE = 8192
     }
 }
